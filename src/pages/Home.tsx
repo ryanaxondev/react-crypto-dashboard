@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { fetchCoins } from '../services/cryptoApi';
 import type { Coin } from '../types/coin';
+import { fetchCoins } from '../services/cryptoApi';
 
 const Home = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
@@ -8,15 +8,22 @@ const Home = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchCoins()
-      .then((data) => {
+    const loadCoins = async () => {
+      try {
+        const data: Coin[] = await fetchCoins();
         setCoins(data);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('Something went wrong');
+        }
+      } finally {
         setLoading(false);
-      })
-      .catch((err: Error) => {
-        setError(err.message);
-        setLoading(false);
-      });
+      }
+    };
+
+    loadCoins();
   }, []);
 
   if (loading) {
