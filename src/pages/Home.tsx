@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
 import type { Coin } from '../types/coin';
 import { fetchCoins } from '../services/cryptoApi';
+import CoinCard from '../components/CoinCard.tsx';
 
 const Home = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadCoins = async () => {
       try {
-        const data: Coin[] = await fetchCoins();
+        const data = await fetchCoins();
         setCoins(data);
       } catch (err) {
         if (err instanceof Error) {
@@ -26,33 +27,25 @@ const Home = () => {
     loadCoins();
   }, []);
 
-  if (loading) {
-    return <p className="text-center">Loading...</p>;
-  }
-
-  if (error) {
-    return <p className="text-red-500 text-center">{error}</p>;
-  }
-
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">🚀 Crypto Dash</h1>
 
-      <ul className="space-y-4">
-        {coins.map((coin) => (
-          <li
-            key={coin.id}
-            className="flex items-center justify-between bg-gray-800 p-4 rounded-xl"
-          >
-            <div className="flex items-center gap-3">
-              <img src={coin.image} alt={coin.name} className="w-8 h-8" />
-              <span>{coin.name}</span>
-            </div>
+      {loading && (
+        <p className="text-center text-gray-400">Loading...</p>
+      )}
 
-            <span>${coin.current_price.toLocaleString()}</span>
-          </li>
-        ))}
-      </ul>
+      {error && (
+        <p className="text-center text-red-500">❌ {error}</p>
+      )}
+
+      {!loading && !error && (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {coins.map((coin) => (
+            <CoinCard key={coin.id} coin={coin} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
