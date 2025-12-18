@@ -10,6 +10,7 @@ src/
 │
 ├── components/
 │   ├── Layout.tsx
+│   ├── CoinCard.tsx
 │   └── Loader.tsx
 │
 ├── services/
