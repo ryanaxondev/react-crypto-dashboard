@@ -13,6 +13,7 @@ src/
 │   ├── CoinCard.tsx
 │   ├── LimitSelector.tsx
 │   ├── FilterInput.tsx
+│   ├── SortSelector.tsx
 │   └── Loader.tsx
 │
 ├── services/
