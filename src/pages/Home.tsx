@@ -20,8 +20,7 @@ const Home = () => {
 
   const [limit, setLimit] = useState<number>(10);
   const [filter, setFilter] = useState<string>('');
-  const [sortBy, setSortBy] =
-    useState<SortOption>('market_cap_desc');
+  const [sortBy, setSortBy] = useState<SortOption>('market_cap_desc');
 
   useEffect(() => {
     const loadCoins = async () => {
@@ -46,12 +45,8 @@ const Home = () => {
   const filteredCoins = coins
     .filter(
       (coin) =>
-        coin.name
-          .toLowerCase()
-          .includes(filter.toLowerCase()) ||
-        coin.symbol
-          .toLowerCase()
-          .includes(filter.toLowerCase())
+        coin.name.toLowerCase().includes(filter.toLowerCase()) ||
+        coin.symbol.toLowerCase().includes(filter.toLowerCase())
     )
     .slice()
     .sort((a, b) => {
@@ -63,15 +58,9 @@ const Home = () => {
         case 'price_asc':
           return a.current_price - b.current_price;
         case 'change_desc':
-          return (
-            b.price_change_percentage_24h -
-            a.price_change_percentage_24h
-          );
+          return b.price_change_percentage_24h - a.price_change_percentage_24h;
         case 'change_asc':
-          return (
-            a.price_change_percentage_24h -
-            b.price_change_percentage_24h
-          );
+          return a.price_change_percentage_24h - b.price_change_percentage_24h;
         default:
           return 0;
       }
@@ -79,57 +68,25 @@ const Home = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">
-        🚀 Crypto Dash
-      </h1>
+      <h1 className="text-3xl font-bold mb-6">🚀 Crypto Dash</h1>
 
       {/* Top Controls */}
-      <div
-        className="
-          mb-8
-          rounded-xl
-          bg-gray-800
-          p-4
-          shadow
-          flex
-          flex-col
-          gap-4
-          sm:flex-row
-          sm:items-center
-          sm:justify-between
-        "
-      >
-        {/* Left controls */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <LimitSelector
-            limit={limit}
-            onLimitChange={setLimit}
-          />
-
-          <SortSelector
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-          />
+      <div className="mb-8 rounded-xl bg-gray-800 p-4 shadow flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        {/* Left controls: search (long) */}
+        <div className="flex-1">
+          <FilterInput filter={filter} onFilterChange={setFilter} />
         </div>
 
-        {/* Right control */}
-        <FilterInput
-          filter={filter}
-          onFilterChange={setFilter}
-        />
+        {/* Right controls: limit + sort */}
+        <div className="flex gap-3 mt-2 sm:mt-0">
+          <LimitSelector limit={limit} onLimitChange={setLimit} />
+          <SortSelector sortBy={sortBy} onSortChange={setSortBy} />
+        </div>
       </div>
 
-      {loading && (
-        <p className="text-center text-gray-400">
-          Loading...
-        </p>
-      )}
+      {loading && <p className="text-center text-gray-400">Loading...</p>}
 
-      {error && (
-        <p className="text-center text-red-500">
-          ❌ {error}
-        </p>
-      )}
+      {error && <p className="text-center text-red-500">❌ {error}</p>}
 
       {!loading && !error && (
         <>
