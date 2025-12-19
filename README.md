@@ -12,6 +12,7 @@ src/
 │   ├── Layout.tsx
 │   ├── CoinCard.tsx
 │   ├── LimitSelector.tsx
+│   ├── FilterInput.tsx
 │   └── Loader.tsx
 │
 ├── services/
