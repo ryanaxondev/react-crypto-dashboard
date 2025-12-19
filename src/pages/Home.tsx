@@ -17,6 +17,7 @@ const Home = () => {
   const [coins, setCoins] = useState<Coin[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
   const [limit, setLimit] = useState<number>(10);
   const [filter, setFilter] = useState<string>('');
   const [sortBy, setSortBy] =
@@ -45,8 +46,12 @@ const Home = () => {
   const filteredCoins = coins
     .filter(
       (coin) =>
-        coin.name.toLowerCase().includes(filter.toLowerCase()) ||
-        coin.symbol.toLowerCase().includes(filter.toLowerCase())
+        coin.name
+          .toLowerCase()
+          .includes(filter.toLowerCase()) ||
+        coin.symbol
+          .toLowerCase()
+          .includes(filter.toLowerCase())
     )
     .slice()
     .sort((a, b) => {
@@ -74,21 +79,56 @@ const Home = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">🚀 Crypto Dash</h1>
+      <h1 className="text-3xl font-bold mb-6">
+        🚀 Crypto Dash
+      </h1>
 
       {/* Top Controls */}
-      <div className="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center">
-        <FilterInput filter={filter} onFilterChange={setFilter} />
-        <LimitSelector limit={limit} onLimitChange={setLimit} />
-        <SortSelector sortBy={sortBy} onSortChange={setSortBy} />
+      <div
+        className="
+          mb-8
+          rounded-xl
+          bg-gray-800
+          p-4
+          shadow
+          flex
+          flex-col
+          gap-4
+          sm:flex-row
+          sm:items-center
+          sm:justify-between
+        "
+      >
+        {/* Left controls */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <LimitSelector
+            limit={limit}
+            onLimitChange={setLimit}
+          />
+
+          <SortSelector
+            sortBy={sortBy}
+            onSortChange={setSortBy}
+          />
+        </div>
+
+        {/* Right control */}
+        <FilterInput
+          filter={filter}
+          onFilterChange={setFilter}
+        />
       </div>
 
       {loading && (
-        <p className="text-center text-gray-400">Loading...</p>
+        <p className="text-center text-gray-400">
+          Loading...
+        </p>
       )}
 
       {error && (
-        <p className="text-center text-red-500">❌ {error}</p>
+        <p className="text-center text-red-500">
+          ❌ {error}
+        </p>
       )}
 
       {!loading && !error && (

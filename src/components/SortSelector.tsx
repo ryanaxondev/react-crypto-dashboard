@@ -10,22 +10,30 @@ type SortSelectorProps = {
   onSortChange: (value: SortOption) => void;
 };
 
-const SortSelector = ({ sortBy, onSortChange }: SortSelectorProps) => {
+const SortSelector = ({
+  sortBy,
+  onSortChange,
+}: SortSelectorProps) => {
   return (
     <div className="flex items-center gap-2">
-      <label htmlFor="sort" className="text-sm text-gray-300">
-        Sort by:
+      <label
+        htmlFor="sort"
+        className="text-xs text-gray-400 whitespace-nowrap"
+      >
+        Sort by
       </label>
 
       <select
         id="sort"
         value={sortBy}
-        onChange={(e) => onSortChange(e.target.value as SortOption)}
+        onChange={(e) =>
+          onSortChange(e.target.value as SortOption)
+        }
         className="
-          px-3
+          px-4
           py-2
           rounded-lg
-          bg-gray-800
+          bg-gray-900
           text-white
           focus:outline-none
           focus:ring-2
