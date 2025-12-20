@@ -68,7 +68,7 @@ const Home = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-6">🚀 Crypto Dash</h1>
+      <h1 className="text-3xl font-bold mb-6">🚀 Crypto Dashboard</h1>
 
       {/* Top Controls */}
       <div className="mb-8 rounded-xl bg-gray-800 p-4 shadow flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
