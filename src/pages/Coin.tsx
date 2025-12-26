@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type CoinDetails = {
   id: string;
@@ -93,113 +94,115 @@ const Coin = () => {
       )}
 
       {!loading && !error && coin && market && (
-        <div className="mt-8 space-y-6">
-          <img
-            src={coin.image.large}
-            alt={coin.name}
-            className="w-24 h-24"
-          />
+        <ErrorBoundary>
+          <div className="mt-8 space-y-6">
+            <img
+              src={coin.image.large}
+              alt={coin.name}
+              className="w-24 h-24"
+            />
 
-          <p className="text-gray-300">
-            {coin.description.en
-              ?.split('. ')[0]
-              ?.concat('.')}
-          </p>
+            <p className="text-gray-300">
+              {coin.description.en
+                ?.split('. ')[0]
+                ?.concat('.')}
+            </p>
 
-          <div className="grid sm:grid-cols-2 gap-4 text-sm">
-            <p>Rank: #{coin.market_cap_rank}</p>
-            <p>
-              Price: $
-              {market.current_price.usd.toLocaleString()}
-            </p>
-            <p>
-              Market Cap: $
-              {market.market_cap.usd.toLocaleString()}
-            </p>
-            <p>
-              24h High: $
-              {market.high_24h.usd.toLocaleString()}
-            </p>
-            <p>
-              24h Low: $
-              {market.low_24h.usd.toLocaleString()}
-            </p>
-            <p>
-              24h Change: $
-              {market.price_change_24h.toFixed(2)} (
-              {market.price_change_percentage_24h.toFixed(
-                2
-              )}
-              %)
-            </p>
-            <p>
-              Circulating Supply:{' '}
-              {market.circulating_supply.toLocaleString()}
-            </p>
-            <p>
-              Total Supply:{' '}
-              {market.total_supply?.toLocaleString() ??
-                'N/A'}
-            </p>
-            <p>
-              Max Supply:{' '}
-              {market.max_supply?.toLocaleString() ??
-                'N/A'}
-            </p>
-            <p>
-              ATH: $
-              {market.ath.usd.toLocaleString()} (
-              {new Date(
-                market.ath_date.usd
-              ).toLocaleDateString()}
-              )
-            </p>
-            <p>
-              ATL: $
-              {market.atl.usd.toLocaleString()} (
-              {new Date(
-                market.atl_date.usd
-              ).toLocaleDateString()}
-              )
-            </p>
-            <p>
-              Last Updated:{' '}
-              {new Date(
-                coin.last_updated
-              ).toLocaleString()}
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            {coin.links.homepage[0] && (
-              <a
-                href={coin.links.homepage[0]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-blue-400 hover:underline"
-              >
-                🌐 Official Website
-              </a>
-            )}
-
-            {coin.links.blockchain_site[0] && (
-              <a
-                href={coin.links.blockchain_site[0]}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-blue-400 hover:underline"
-              >
-                🧩 Blockchain Explorer
-              </a>
-            )}
-
-            {coin.categories.length > 0 && (
-              <p className="text-xs text-gray-400">
-                Categories: {coin.categories.join(', ')}
+            <div className="grid sm:grid-cols-2 gap-4 text-sm">
+              <p>Rank: #{coin.market_cap_rank}</p>
+              <p>
+                Price: $
+                {market.current_price.usd.toLocaleString()}
               </p>
-            )}
+              <p>
+                Market Cap: $
+                {market.market_cap.usd.toLocaleString()}
+              </p>
+              <p>
+                24h High: $
+                {market.high_24h.usd.toLocaleString()}
+              </p>
+              <p>
+                24h Low: $
+                {market.low_24h.usd.toLocaleString()}
+              </p>
+              <p>
+                24h Change: $
+                {market.price_change_24h.toFixed(2)} (
+                {market.price_change_percentage_24h.toFixed(
+                  2
+                )}
+                %)
+              </p>
+              <p>
+                Circulating Supply:{' '}
+                {market.circulating_supply.toLocaleString()}
+              </p>
+              <p>
+                Total Supply:{' '}
+                {market.total_supply?.toLocaleString() ??
+                  'N/A'}
+              </p>
+              <p>
+                Max Supply:{' '}
+                {market.max_supply?.toLocaleString() ??
+                  'N/A'}
+              </p>
+              <p>
+                ATH: $
+                {market.ath.usd.toLocaleString()} (
+                {new Date(
+                  market.ath_date.usd
+                ).toLocaleDateString()}
+                )
+              </p>
+              <p>
+                ATL: $
+                {market.atl.usd.toLocaleString()} (
+                {new Date(
+                  market.atl_date.usd
+                ).toLocaleDateString()}
+                )
+              </p>
+              <p>
+                Last Updated:{' '}
+                {new Date(
+                  coin.last_updated
+                ).toLocaleString()}
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              {coin.links.homepage[0] && (
+                <a
+                  href={coin.links.homepage[0]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-blue-400 hover:underline"
+                >
+                  🌐 Official Website
+                </a>
+              )}
+
+              {coin.links.blockchain_site[0] && (
+                <a
+                  href={coin.links.blockchain_site[0]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-blue-400 hover:underline"
+                >
+                  🧩 Blockchain Explorer
+                </a>
+              )}
+
+              {coin.categories.length > 0 && (
+                <p className="text-xs text-gray-400">
+                  Categories: {coin.categories.join(', ')}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        </ErrorBoundary>
       )}
 
       {!loading && !error && !coin && (
