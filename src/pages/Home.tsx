@@ -42,6 +42,8 @@ const Home = () => {
     loadCoins();
   }, [limit]);
 
+  const safeNumber = (value: number | null) => value ?? -Infinity;
+
   const filteredCoins = coins
     .filter(
       (coin) =>
@@ -52,15 +54,26 @@ const Home = () => {
     .sort((a, b) => {
       switch (sortBy) {
         case 'market_cap_desc':
-          return b.market_cap - a.market_cap;
+          return safeNumber(b.market_cap) - safeNumber(a.market_cap);
+
         case 'price_desc':
-          return b.current_price - a.current_price;
+          return safeNumber(b.current_price) - safeNumber(a.current_price);
+
         case 'price_asc':
-          return a.current_price - b.current_price;
+          return safeNumber(a.current_price) - safeNumber(b.current_price);
+
         case 'change_desc':
-          return b.price_change_percentage_24h - a.price_change_percentage_24h;
+          return (
+            safeNumber(b.price_change_percentage_24h) -
+            safeNumber(a.price_change_percentage_24h)
+          );
+
         case 'change_asc':
-          return a.price_change_percentage_24h - b.price_change_percentage_24h;
+          return (
+            safeNumber(a.price_change_percentage_24h) -
+            safeNumber(b.price_change_percentage_24h)
+          );
+
         default:
           return 0;
       }
@@ -72,21 +85,23 @@ const Home = () => {
 
       {/* Top Controls */}
       <div className="mb-8 rounded-xl bg-gray-800 p-4 shadow flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        {/* Left controls: search (long) */}
         <div className="flex-1">
           <FilterInput filter={filter} onFilterChange={setFilter} />
         </div>
 
-        {/* Right controls: limit + sort */}
         <div className="flex gap-3 mt-2 sm:mt-0">
           <LimitSelector limit={limit} onLimitChange={setLimit} />
           <SortSelector sortBy={sortBy} onSortChange={setSortBy} />
         </div>
       </div>
 
-      {loading && <p className="text-center text-gray-400">Loading...</p>}
+      {loading && (
+        <p className="text-center text-gray-400">Loading...</p>
+      )}
 
-      {error && <p className="text-center text-red-500">❌ {error}</p>}
+      {error && (
+        <p className="text-center text-red-500">❌ {error}</p>
+      )}
 
       {!loading && !error && (
         <>
