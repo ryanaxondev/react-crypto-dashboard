@@ -6,6 +6,7 @@ src/
 ├── pages/
 │   ├── Home.tsx
 │   ├── Coin.tsx
+│   ├── NotFound.tsx
 │   └── About.tsx
 │
 ├── components/
