@@ -1,66 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ErrorBoundary from '../components/ErrorBoundary';
-
-type CoinDetails = {
-  id: string;
-  name: string;
-  symbol: string;
-
-  image?: {
-    large?: string;
-  };
-
-  description?: {
-    en?: string;
-  };
-
-  market_cap_rank?: number;
-
-  market_data?: {
-    current_price?: { usd?: number };
-    market_cap?: { usd?: number };
-    high_24h?: { usd?: number };
-    low_24h?: { usd?: number };
-    price_change_24h?: number;
-    price_change_percentage_24h?: number;
-    circulating_supply?: number;
-    total_supply?: number | null;
-    max_supply?: number | null;
-    ath?: { usd?: number };
-    ath_date?: { usd?: string };
-    atl?: { usd?: number };
-    atl_date?: { usd?: string };
-  };
-
-  links?: {
-    homepage?: string[];
-    blockchain_site?: string[];
-  };
-
-  categories?: string[];
-  last_updated?: string;
-};
+import { fetchCoinById } from '../services/cryptoApi';
+import type { CoinUIModel } from '../types/coin-details';
 
 const Coin = () => {
   const { id } = useParams<{ id: string }>();
 
-  const [coin, setCoin] = useState<CoinDetails | null>(null);
+  const [coin, setCoin] = useState<CoinUIModel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!id) return;
+
     const fetchCoin = async () => {
       try {
-        const res = await fetch(
-          `https://api.coingecko.com/api/v3/coins/${id}`
-        );
-
-        if (!res.ok) {
-          throw new Error('Failed to fetch coin data');
-        }
-
-        const data: CoinDetails = await res.json();
+        const data = await fetchCoinById(id);
         setCoin(data);
       } catch (err) {
         setError(
@@ -85,7 +41,7 @@ const Coin = () => {
 
       <h1 className="mt-4 text-3xl font-bold">
         {coin
-          ? `${coin.name} (${coin.symbol.toUpperCase()})`
+          ? `${coin.name} (${coin.symbol})`
           : 'Coin Details'}
       </h1>
 
@@ -100,120 +56,101 @@ const Coin = () => {
       {!loading && !error && coin && (
         <ErrorBoundary>
           <div className="mt-8 space-y-6">
-            {coin.image?.large && (
+            {coin.image && (
               <img
-                src={coin.image.large}
+                src={coin.image}
                 alt={coin.name}
                 className="w-24 h-24"
               />
             )}
 
-            <p className="text-gray-300">
-              {coin.description?.en
-                ?.split('. ')[0]
-                ?.concat('.') ?? 'No description available.'}
-            </p>
+            <p className="text-gray-300">{coin.description}</p>
 
-            {coin.market_data && (
-              <div className="grid sm:grid-cols-2 gap-4 text-sm">
-                <p>Rank: #{coin.market_cap_rank ?? 'N/A'}</p>
+            <div className="grid sm:grid-cols-2 gap-4 text-sm">
+              <p>Rank: {coin.rank ?? 'N/A'}</p>
 
-                <p>
-                  Price: $
-                  {coin.market_data.current_price?.usd?.toLocaleString() ??
-                    'N/A'}
-                </p>
+              <p>
+                Price: $
+                {coin.price?.toLocaleString() ?? 'N/A'}
+              </p>
 
-                <p>
-                  Market Cap: $
-                  {coin.market_data.market_cap?.usd?.toLocaleString() ??
-                    'N/A'}
-                </p>
+              <p>
+                Market Cap: $
+                {coin.marketCap?.toLocaleString() ?? 'N/A'}
+              </p>
 
-                <p>
-                  24h High: $
-                  {coin.market_data.high_24h?.usd?.toLocaleString() ??
-                    'N/A'}
-                </p>
+              <p>
+                24h High: $
+                {coin.high24h?.toLocaleString() ?? 'N/A'}
+              </p>
 
-                <p>
-                  24h Low: $
-                  {coin.market_data.low_24h?.usd?.toLocaleString() ??
-                    'N/A'}
-                </p>
+              <p>
+                24h Low: $
+                {coin.low24h?.toLocaleString() ?? 'N/A'}
+              </p>
 
-                <p>
-                  24h Change:{' '}
-                  {coin.market_data.price_change_24h !== undefined
-                    ? `$${coin.market_data.price_change_24h.toFixed(2)}`
-                    : 'N/A'}{' '}
-                  (
-                  {coin.market_data.price_change_percentage_24h !==
-                  undefined
-                    ? `${coin.market_data.price_change_percentage_24h.toFixed(
-                        2
-                      )}%`
-                    : 'N/A'}
-                  )
-                </p>
+              <p>
+                24h Change:{' '}
+                {coin.priceChange24h !== null
+                  ? `$${coin.priceChange24h.toFixed(2)}`
+                  : 'N/A'}{' '}
+                (
+                {coin.priceChangePercent24h !== null
+                  ? `${coin.priceChangePercent24h.toFixed(
+                      2
+                    )}%`
+                  : 'N/A'}
+                )
+              </p>
 
-                <p>
-                  Circulating Supply:{' '}
-                  {coin.market_data.circulating_supply?.toLocaleString() ??
-                    'N/A'}
-                </p>
+              <p>
+                Circulating Supply:{' '}
+                {coin.circulatingSupply?.toLocaleString() ??
+                  'N/A'}
+              </p>
 
-                <p>
-                  Total Supply:{' '}
-                  {coin.market_data.total_supply?.toLocaleString() ??
-                    'N/A'}
-                </p>
+              <p>
+                Total Supply:{' '}
+                {coin.totalSupply?.toLocaleString() ?? 'N/A'}
+              </p>
 
-                <p>
-                  Max Supply:{' '}
-                  {coin.market_data.max_supply?.toLocaleString() ??
-                    'N/A'}
-                </p>
+              <p>
+                Max Supply:{' '}
+                {coin.maxSupply?.toLocaleString() ?? 'N/A'}
+              </p>
 
-                <p>
-                  ATH: $
-                  {coin.market_data.ath?.usd?.toLocaleString() ??
-                    'N/A'}{' '}
-                  (
-                  {coin.market_data.ath_date?.usd
-                    ? new Date(
-                        coin.market_data.ath_date.usd
-                      ).toLocaleDateString()
-                    : 'N/A'}
-                  )
-                </p>
+              <p>
+                ATH: $
+                {coin.ath?.toLocaleString() ?? 'N/A'} (
+                {coin.athDate
+                  ? new Date(coin.athDate).toLocaleDateString()
+                  : 'N/A'}
+                )
+              </p>
 
-                <p>
-                  ATL: $
-                  {coin.market_data.atl?.usd?.toLocaleString() ??
-                    'N/A'}{' '}
-                  (
-                  {coin.market_data.atl_date?.usd
-                    ? new Date(
-                        coin.market_data.atl_date.usd
-                      ).toLocaleDateString()
-                    : 'N/A'}
-                  )
-                </p>
+              <p>
+                ATL: $
+                {coin.atl?.toLocaleString() ?? 'N/A'} (
+                {coin.atlDate
+                  ? new Date(coin.atlDate).toLocaleDateString()
+                  : 'N/A'}
+                )
+              </p>
 
-                <p>
-                  Last Updated:{' '}
-                  {coin.last_updated
-                    ? new Date(coin.last_updated).toLocaleString()
-                    : 'N/A'}
-                </p>
-              </div>
-            )}
+              <p>
+                Last Updated:{' '}
+                {coin.lastUpdated
+                  ? new Date(
+                      coin.lastUpdated
+                    ).toLocaleString()
+                  : 'N/A'}
+              </p>
+            </div>
 
             <div className="space-y-2">
-              {coin.links?.homepage?.[0] && (
+              {coin.website && (
                 <a
-                  href={coin.links.homepage[0]}
+                  href={coin.website}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-blue-400 hover:underline"
@@ -222,9 +159,9 @@ const Coin = () => {
                 </a>
               )}
 
-              {coin.links?.blockchain_site?.[0] && (
+              {coin.explorer && (
                 <a
-                  href={coin.links.blockchain_site[0]}
+                  href={coin.explorer}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block text-blue-400 hover:underline"
@@ -233,11 +170,11 @@ const Coin = () => {
                 </a>
               )}
 
-              {coin.categories?.length ? (
+              {coin.categories.length > 0 && (
                 <p className="text-xs text-gray-400">
                   Categories: {coin.categories.join(', ')}
                 </p>
-              ) : null}
+              )}
             </div>
           </div>
         </ErrorBoundary>

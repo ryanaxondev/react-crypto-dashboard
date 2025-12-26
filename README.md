@@ -19,9 +19,11 @@ src/
 │   └── Loader.tsx
 │
 ├── services/
+│   ├── coinMapper.ts
 │   └── cryptoApi.ts
 │
 ├── types/
+│   ├── coin-details.ts
 │   └── coin.ts
 │
 ├── App.tsx
