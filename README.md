@@ -15,6 +15,7 @@ src/
 │   ├── LimitSelector.tsx
 │   ├── FilterInput.tsx
 │   ├── SortSelector.tsx
+│   ├── ErrorBoundary.tsx
 │   └── Loader.tsx
 │
 ├── services/
