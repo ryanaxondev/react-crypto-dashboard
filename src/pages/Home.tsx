@@ -5,6 +5,7 @@ import CoinCard from '../components/CoinCard';
 import LimitSelector from '../components/LimitSelector';
 import FilterInput from '../components/FilterInput';
 import SortSelector from '../components/SortSelector';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 type SortOption =
   | 'market_cap_desc'
@@ -83,7 +84,6 @@ const Home = () => {
     <div>
       <h1 className="text-3xl font-bold mb-6">🚀 Crypto Dashboard</h1>
 
-      {/* Top Controls */}
       <div className="mb-8 rounded-xl bg-gray-800 p-4 shadow flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex-1">
           <FilterInput filter={filter} onFilterChange={setFilter} />
@@ -108,7 +108,9 @@ const Home = () => {
           {filteredCoins.length > 0 ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filteredCoins.map((coin) => (
-                <CoinCard key={coin.id} coin={coin} />
+                <ErrorBoundary key={coin.id}>
+                  <CoinCard coin={coin} />
+                </ErrorBoundary>
               ))}
             </div>
           ) : (
