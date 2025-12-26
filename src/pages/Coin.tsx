@@ -1,34 +1,10 @@
-import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { fetchCoinById } from '../services/cryptoApi';
-import type { CoinUIModel } from '../types/coin-details';
+import { useCoin } from '../hooks/useCoin';
 
 const Coin = () => {
   const { id } = useParams<{ id: string }>();
-
-  const [coin, setCoin] = useState<CoinUIModel | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchCoin = async () => {
-      try {
-        const data = await fetchCoinById(id);
-        setCoin(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Something went wrong'
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCoin();
-  }, [id]);
+  const { coin, loading, error } = useCoin(id);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">

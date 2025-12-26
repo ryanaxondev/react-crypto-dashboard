@@ -22,6 +22,9 @@ src/
 │   ├── coinMapper.ts
 │   └── cryptoApi.ts
 │
+├── services/hooks
+│   └── useCoin.ts
+│
 ├── types/
 │   ├── coin-details.ts
 │   └── coin.ts
