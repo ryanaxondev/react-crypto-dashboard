@@ -6,3 +6,5 @@ export type CoinChartPoint = {
 export type CoinChartData = {
   points: CoinChartPoint[];
 };
+
+export type ChartRange = 7 | 30 | 365;
