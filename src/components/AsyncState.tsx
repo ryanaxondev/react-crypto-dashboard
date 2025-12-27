@@ -1,10 +1,19 @@
-type AsyncStateProps<T> = {
+import type { ReactNode } from 'react';
+
+export type AsyncStateProps<T> = {
   loading: boolean;
-  error: string | null;
+
+  error?: string | ReactNode | null;
+
   data: T | null | undefined;
-  loader: React.ReactNode;
-  emptyFallback?: React.ReactNode;
-  children: (data: T) => React.ReactNode;
+
+  loader: ReactNode;
+
+  emptyFallback?: ReactNode;
+
+  isEmpty?: (data: T) => boolean;
+
+  children: (data: T) => ReactNode;
 };
 
 const AsyncState = <T,>({
@@ -13,21 +22,54 @@ const AsyncState = <T,>({
   data,
   loader,
   emptyFallback,
+  isEmpty,
   children,
 }: AsyncStateProps<T>) => {
-  if (loading) return <>{loader}</>;
+  if (loading) {
+    return <>{loader}</>;
+  }
 
   if (error) {
     return (
-      <p className="text-center text-red-500">
-        ❌ {error}
-      </p>
+      <>
+        {typeof error === 'string' ? (
+          <p className="text-center text-red-500">
+            ❌ {error}
+          </p>
+        ) : (
+          error
+        )}
+      </>
+    );
+  }
+
+  if (!data) {
+    return (
+      <>
+        {emptyFallback ?? (
+          <p className="text-center text-gray-400">
+            No data available.
+          </p>
+        )}
+      </>
+    );
+  }
+
+  if (isEmpty?.(data)) {
+    return (
+      <>
+        {emptyFallback ?? (
+          <p className="text-center text-gray-400">
+            No data available.
+          </p>
+        )}
+      </>
     );
   }
 
   if (
-    !data ||
-    (Array.isArray(data) && data.length === 0)
+    Array.isArray(data) &&
+    data.length === 0
   ) {
     return (
       <>
