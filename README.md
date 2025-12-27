@@ -17,9 +17,11 @@ src/
 │   ├── SortSelector.tsx
 │   ├── ErrorBoundary.tsx
 │   ├── Loader.tsx
+│   ├── AsyncState.tsx
 │   │
 │   └── skeletons/
 │       ├── CoinDetailsSkeleton.tsx
+│       ├── CoinCardSkeletonGrid.tsx
 │       └── CoinCardSkeleton.tsx
 │
 ├── services/

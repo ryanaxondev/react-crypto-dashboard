@@ -6,7 +6,9 @@ import LimitSelector from '../components/LimitSelector';
 import FilterInput from '../components/FilterInput';
 import SortSelector from '../components/SortSelector';
 import ErrorBoundary from '../components/ErrorBoundary';
-import CoinCardSkeleton from '../components/skeletons/CoinCardSkeleton';
+import AsyncState from '../components/AsyncState';
+import CoinCardSkeletonGrid from '../components/skeletons/CoinCardSkeletonGrid';
+
 
 type SortOption =
   | 'market_cap_desc'
@@ -96,35 +98,28 @@ const Home = () => {
         </div>
       </div>
 
-      {loading && !error && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: limit }).map((_, i) => (
-            <CoinCardSkeleton key={i} />
-          ))}
-        </div>
-      )}
+      <AsyncState
+        loading={loading}
+        error={error}
+        data={filteredCoins}
+        loader={<CoinCardSkeletonGrid count={limit} />}
+        emptyFallback={
+          <p className="text-center text-gray-400">
+            No coins match your filter.
+          </p>
+        }
+      >
+        {(coins) => (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {coins.map((coin) => (
+              <ErrorBoundary key={coin.id}>
+                <CoinCard coin={coin} />
+              </ErrorBoundary>
+            ))}
+          </div>
+        )}
+      </AsyncState>
 
-      {error && (
-        <p className="text-center text-red-500">❌ {error}</p>
-      )}
-
-      {!loading && !error && (
-        <>
-          {filteredCoins.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredCoins.map((coin) => (
-                <ErrorBoundary key={coin.id}>
-                  <CoinCard coin={coin} />
-                </ErrorBoundary>
-              ))}
-            </div>
-          ) : (
-            <p className="text-center text-gray-400">
-              No coins match your filter.
-            </p>
-          )}
-        </>
-      )}
     </div>
   );
 };
