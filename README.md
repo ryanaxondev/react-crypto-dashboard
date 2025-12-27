@@ -33,6 +33,7 @@ src/
 │
 ├── types/
 │   ├── coin.ts
+│   ├── coin-chart.ts
 │   └── coin-details.ts
 │
 ├── App.tsx

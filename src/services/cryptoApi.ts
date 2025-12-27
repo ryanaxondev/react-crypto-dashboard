@@ -1,5 +1,8 @@
 import type { Coin } from '../types/coin';
-import type { CoinApiResponse, CoinUIModel } from '../types/coin-details';
+import type {
+  CoinApiResponse,
+  CoinUIModel,
+} from '../types/coin-details';
 import { mapCoinApiToUI } from './coinMapper';
 
 const BASE_URL = import.meta.env.VITE_COINS_API_URL;
@@ -31,4 +34,22 @@ export const fetchCoinById = async (
 
   const data: CoinApiResponse = await res.json();
   return mapCoinApiToUI(data);
+};
+
+/**
+ * Raw fetch for coin price chart data (no parsing here)
+ */
+export const fetchCoinChart = async (
+  coinId: string,
+  days: number
+) => {
+  const res = await fetch(
+    `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`
+  );
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch chart data');
+  }
+
+  return res.json(); // ⚠️ raw response on purpose
 };
