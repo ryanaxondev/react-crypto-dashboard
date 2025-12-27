@@ -26,44 +26,41 @@ const CoinChart = ({
       isEmpty={(d) => d.points.length === 0}
     >
       {(chart) => (
-        <Line
-          data={{
-            datasets: [
-              {
-                label: 'Price (USD)',
-                data: chart.points.map(
-                  (p) => ({
+        <div className="h-64 w-full">
+          <Line
+            data={{
+              datasets: [
+                {
+                  label: 'Price (USD)',
+                  data: chart.points.map((p) => ({
                     x: p.timestamp,
                     y: p.price,
-                  })
-                ),
-                borderColor: '#3b82f6',
-                backgroundColor:
-                  'rgba(59,130,246,0.15)',
-                tension: 0.3,
-                pointRadius: 0,
-                fill: true,
-              },
-            ],
-          }}
-          options={{
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                type: 'time',
-                grid: {
-                  display: false,
+                  })),
+                  borderColor: '#3b82f6',
+                  backgroundColor: 'rgba(59,130,246,0.15)',
+                  tension: 0.3,
+                  pointRadius: 0,
+                  fill: true,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  type: 'time',
+                  grid: { display: false },
+                },
+                y: {
+                  grid: {
+                    color: 'rgba(255,255,255,0.05)',
+                  },
                 },
               },
-              y: {
-                grid: {
-                  color: 'rgba(255,255,255,0.05)',
-                },
-              },
-            },
-          }}
-        />
+            }}
+          />
+        </div>
       )}
     </AsyncState>
   );
