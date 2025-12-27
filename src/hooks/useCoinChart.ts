@@ -1,35 +1,83 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useReducer } from 'react';
 import { fetchCoinChart } from '../services/cryptoApi';
 import { mapCoinChart } from '../services/chartMapper';
 import type { CoinChartData } from '../types/coin-chart';
+
+type State = {
+  data: CoinChartData | null;
+  loading: boolean;
+  error: string | null;
+};
+
+type Action =
+  | { type: 'START' }
+  | { type: 'SUCCESS'; payload: CoinChartData }
+  | { type: 'ERROR'; payload: string };
+
+const initialState: State = {
+  data: null,
+  loading: false,
+  error: null,
+};
+
+function reducer(
+  state: State,
+  action: Action
+): State {
+  switch (action.type) {
+    case 'START':
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+
+    case 'SUCCESS':
+      return {
+        data: action.payload,
+        loading: false,
+        error: null,
+      };
+
+    case 'ERROR':
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    default:
+      return state;
+  }
+}
 
 export function useCoinChart(
   coinId?: string,
   days = 7
 ) {
-  const [data, setData] =
-    useState<CoinChartData | null>(null);
-  const [loading, setLoading] =
-    useState<boolean>(false);
-  const [error, setError] =
-    useState<string | null>(null);
+  const [state, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
 
   useEffect(() => {
     if (!coinId) return;
 
     const controller = new AbortController();
 
-    setError(null);
-    setLoading(true);
+    dispatch({ type: 'START' });
 
     fetchCoinChart(
       coinId,
       days,
       controller.signal
     )
-      .then((raw) => {
-        setData(mapCoinChart(raw));
-      })
+      .then((raw) =>
+        dispatch({
+          type: 'SUCCESS',
+          payload: mapCoinChart(raw),
+        })
+      )
       .catch((err: unknown) => {
         if (
           err instanceof DOMException &&
@@ -38,18 +86,17 @@ export function useCoinChart(
           return;
         }
 
-        setError(
-          err instanceof Error
-            ? err.message
-            : 'Failed to load chart data'
-        );
-      })
-      .finally(() => {
-        setLoading(false);
+        dispatch({
+          type: 'ERROR',
+          payload:
+            err instanceof Error
+              ? err.message
+              : 'Failed to load chart data',
+        });
       });
 
     return () => controller.abort();
   }, [coinId, days]);
 
-  return { data, loading, error };
+  return state;
 }
