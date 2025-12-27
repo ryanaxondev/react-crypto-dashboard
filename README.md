@@ -30,12 +30,16 @@ src/
 │   └── coinMapper.ts
 │
 ├── hooks/
+│   ├── useCoinChart.ts
 │   └── useCoin.ts
 │
 ├── types/
 │   ├── coin.ts
 │   ├── coin-chart.ts
 │   └── coin-details.ts
+│
+├── lib/
+│   └── chart.ts
 │
 ├── App.tsx
 ├── main.tsx

@@ -36,20 +36,20 @@ export const fetchCoinById = async (
   return mapCoinApiToUI(data);
 };
 
-/**
- * Raw fetch for coin price chart data (no parsing here)
- */
 export const fetchCoinChart = async (
   coinId: string,
-  days: number
+  days: number,
+  signal?: AbortSignal
 ) => {
   const res = await fetch(
-    `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`
+    `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`,
+    { signal }
   );
 
   if (!res.ok) {
     throw new Error('Failed to fetch chart data');
   }
 
-  return res.json(); // ⚠️ raw response on purpose
+  return res.json();
 };
+
