@@ -18,11 +18,13 @@ src/
 │   ├── ErrorBoundary.tsx
 │   ├── Loader.tsx
 │   ├── AsyncState.tsx
+│   ├── CoinChart.tsx
 │   │
 │   └── skeletons/
 │       ├── CoinDetailsSkeleton.tsx
 │       ├── CoinCardSkeletonGrid.tsx
-│       └── CoinCardSkeleton.tsx
+│       ├── CoinCardSkeleton.tsx
+│       └── CoinChartSkeleton.tsx
 │
 ├── services/
 │   ├── cryptoApi.ts

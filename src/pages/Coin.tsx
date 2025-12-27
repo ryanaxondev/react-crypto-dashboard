@@ -3,6 +3,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import { useCoin } from '../hooks/useCoin';
 import CoinDetailsSkeleton from '../components/skeletons/CoinDetailsSkeleton';
 import AsyncState from '../components/AsyncState';
+import CoinChart from '../components/CoinChart';
 
 const Coin = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,7 +35,8 @@ const Coin = () => {
       >
         {(coin) => (
           <ErrorBoundary>
-            <div className="mt-8 space-y-6">
+            <div className="mt-8 space-y-8">
+              {/* Header */}
               {coin.image && (
                 <img
                   src={coin.image}
@@ -45,6 +47,7 @@ const Coin = () => {
 
               <p className="text-gray-300">{coin.description}</p>
 
+              {/* Price Stats */}
               <div className="grid sm:grid-cols-2 gap-4 text-sm">
                 <p>Rank: {coin.rank ?? 'N/A'}</p>
 
@@ -120,6 +123,8 @@ const Coin = () => {
                     : 'N/A'}
                 </p>
               </div>
+
+              <CoinChart coinId={coin.id} />
 
               <div className="space-y-2">
                 {coin.website && (
