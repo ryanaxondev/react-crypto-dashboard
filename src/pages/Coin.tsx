@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { useCoin } from '../hooks/useCoin';
+import CoinDetailsSkeleton from '../components/skeletons/CoinDetailsSkeleton';
 
 const Coin = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,9 +22,7 @@ const Coin = () => {
           : 'Coin Details'}
       </h1>
 
-      {loading && (
-        <p className="mt-6 text-gray-400">Loading...</p>
-      )}
+      {loading && !error && <CoinDetailsSkeleton />}
 
       {error && (
         <p className="mt-6 text-red-400">❌ {error}</p>

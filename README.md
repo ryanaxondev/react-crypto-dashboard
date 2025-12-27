@@ -6,8 +6,8 @@ src/
 ├── pages/
 │   ├── Home.tsx
 │   ├── Coin.tsx
-│   ├── NotFound.tsx
-│   └── About.tsx
+│   ├── About.tsx
+│   └── NotFound.tsx
 │
 ├── components/
 │   ├── Layout.tsx
@@ -16,18 +16,22 @@ src/
 │   ├── FilterInput.tsx
 │   ├── SortSelector.tsx
 │   ├── ErrorBoundary.tsx
-│   └── Loader.tsx
+│   ├── Loader.tsx
+│   │
+│   └── skeletons/
+│       ├── CoinDetailsSkeleton.tsx
+│       └── CoinCardSkeleton.tsx
 │
 ├── services/
-│   ├── coinMapper.ts
-│   └── cryptoApi.ts
+│   ├── cryptoApi.ts
+│   └── coinMapper.ts
 │
-├── services/hooks
+├── hooks/
 │   └── useCoin.ts
 │
 ├── types/
-│   ├── coin-details.ts
-│   └── coin.ts
+│   ├── coin.ts
+│   └── coin-details.ts
 │
 ├── App.tsx
 ├── main.tsx

@@ -6,6 +6,7 @@ import LimitSelector from '../components/LimitSelector';
 import FilterInput from '../components/FilterInput';
 import SortSelector from '../components/SortSelector';
 import ErrorBoundary from '../components/ErrorBoundary';
+import CoinCardSkeleton from '../components/skeletons/CoinCardSkeleton';
 
 type SortOption =
   | 'market_cap_desc'
@@ -95,8 +96,12 @@ const Home = () => {
         </div>
       </div>
 
-      {loading && (
-        <p className="text-center text-gray-400">Loading...</p>
+      {loading && !error && (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: limit }).map((_, i) => (
+            <CoinCardSkeleton key={i} />
+          ))}
+        </div>
       )}
 
       {error && (
