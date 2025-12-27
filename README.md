@@ -26,6 +26,7 @@ src/
 │
 ├── services/
 │   ├── cryptoApi.ts
+│   ├── chartMapper.ts
 │   └── coinMapper.ts
 │
 ├── hooks/
