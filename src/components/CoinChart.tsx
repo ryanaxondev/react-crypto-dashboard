@@ -11,7 +11,6 @@ import type {
 
 import type { ChartRange } from '../types/coin-chart';
 import { useCoinChart } from '../hooks/useCoinChart';
-import AsyncState from './AsyncState';
 import CoinChartSkeleton from './skeletons/CoinChartSkeleton';
 
 /* ------------------------------------------------------------------ */
@@ -191,22 +190,35 @@ const CoinChart = ({ coinId }: CoinChartProps) => {
         ))}
       </div>
 
-      <AsyncState
-        data={data}
-        loading={loading}
-        error={error}
-        loader={<CoinChartSkeleton />}
-        isEmpty={(d) => d.points.length === 0}
-      >
-        {() => (
-          <div className="h-64 w-full">
-            <Line
-              data={chartData}
-              options={options}
-            />
-          </div>
-        )}
-      </AsyncState>
+      {/* Chart */}
+      {!data && loading && (
+        <CoinChartSkeleton />
+      )}
+
+      {data && (
+        <div className="relative h-64 w-full">
+          <Line
+            data={chartData}
+            options={options}
+          />
+
+          {/* Optimistic overlay */}
+          {loading && (
+            <div className="absolute inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+              <span className="text-sm text-white/80">
+                Updating…
+              </span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {error && (
+        <p className="mt-2 text-sm text-red-400">
+          {error}
+        </p>
+      )}
+
     </div>
   );
 };

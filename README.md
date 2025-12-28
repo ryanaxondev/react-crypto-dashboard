@@ -19,6 +19,7 @@ src/
 │   ├── Loader.tsx
 │   ├── AsyncState.tsx
 │   ├── CoinChart.tsx
+│   ├── ChartRangeSelector.tsx
 │   │
 │   └── skeletons/
 │       ├── CoinDetailsSkeleton.tsx

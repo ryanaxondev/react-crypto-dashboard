@@ -1,13 +1,23 @@
 import { Link, useParams } from 'react-router-dom';
+import { useState } from 'react';
+
 import ErrorBoundary from '../components/ErrorBoundary';
-import { useCoin } from '../hooks/useCoin';
-import CoinDetailsSkeleton from '../components/skeletons/CoinDetailsSkeleton';
 import AsyncState from '../components/AsyncState';
+
+import { useCoin } from '../hooks/useCoin';
+
+import CoinDetailsSkeleton from '../components/skeletons/CoinDetailsSkeleton';
 import CoinChart from '../components/CoinChart';
+import ChartRangeSelector from '../components/ChartRangeSelector';
+
+import type { ChartRange } from '../types/coin-chart';
 
 const Coin = () => {
   const { id } = useParams<{ id: string }>();
   const { coin, loading, error } = useCoin(id);
+
+  // chart range state (UI concern)
+  const [range, setRange] = useState<ChartRange>(7);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -45,7 +55,9 @@ const Coin = () => {
                 />
               )}
 
-              <p className="text-gray-300">{coin.description}</p>
+              <p className="text-gray-300">
+                {coin.description}
+              </p>
 
               {/* Price Stats */}
               <div className="grid sm:grid-cols-2 gap-4 text-sm">
@@ -53,65 +65,85 @@ const Coin = () => {
 
                 <p>
                   Price: $
-                  {coin.price?.toLocaleString() ?? 'N/A'}
+                  {coin.price?.toLocaleString() ??
+                    'N/A'}
                 </p>
 
                 <p>
                   Market Cap: $
-                  {coin.marketCap?.toLocaleString() ?? 'N/A'}
+                  {coin.marketCap?.toLocaleString() ??
+                    'N/A'}
                 </p>
 
                 <p>
                   24h High: $
-                  {coin.high24h?.toLocaleString() ?? 'N/A'}
+                  {coin.high24h?.toLocaleString() ??
+                    'N/A'}
                 </p>
 
                 <p>
                   24h Low: $
-                  {coin.low24h?.toLocaleString() ?? 'N/A'}
+                  {coin.low24h?.toLocaleString() ??
+                    'N/A'}
                 </p>
 
                 <p>
                   24h Change:{' '}
                   {coin.priceChange24h !== null
-                    ? `$${coin.priceChange24h.toFixed(2)}`
+                    ? `$${coin.priceChange24h.toFixed(
+                        2
+                      )}`
                     : 'N/A'}{' '}
                   (
-                  {coin.priceChangePercent24h !== null
-                    ? `${coin.priceChangePercent24h.toFixed(2)}%`
+                  {coin.priceChangePercent24h !==
+                  null
+                    ? `${coin.priceChangePercent24h.toFixed(
+                        2
+                      )}%`
                     : 'N/A'}
                   )
                 </p>
 
                 <p>
                   Circulating Supply:{' '}
-                  {coin.circulatingSupply?.toLocaleString() ?? 'N/A'}
+                  {coin.circulatingSupply?.toLocaleString() ??
+                    'N/A'}
                 </p>
 
                 <p>
                   Total Supply:{' '}
-                  {coin.totalSupply?.toLocaleString() ?? 'N/A'}
+                  {coin.totalSupply?.toLocaleString() ??
+                    'N/A'}
                 </p>
 
                 <p>
                   Max Supply:{' '}
-                  {coin.maxSupply?.toLocaleString() ?? 'N/A'}
+                  {coin.maxSupply?.toLocaleString() ??
+                    'N/A'}
                 </p>
 
                 <p>
                   ATH: $
-                  {coin.ath?.toLocaleString() ?? 'N/A'} (
+                  {coin.ath?.toLocaleString() ??
+                    'N/A'}{' '}
+                  (
                   {coin.athDate
-                    ? new Date(coin.athDate).toLocaleDateString()
+                    ? new Date(
+                        coin.athDate
+                      ).toLocaleDateString()
                     : 'N/A'}
                   )
                 </p>
 
                 <p>
                   ATL: $
-                  {coin.atl?.toLocaleString() ?? 'N/A'} (
+                  {coin.atl?.toLocaleString() ??
+                    'N/A'}{' '}
+                  (
                   {coin.atlDate
-                    ? new Date(coin.atlDate).toLocaleDateString()
+                    ? new Date(
+                        coin.atlDate
+                      ).toLocaleDateString()
                     : 'N/A'}
                   )
                 </p>
@@ -119,13 +151,28 @@ const Coin = () => {
                 <p>
                   Last Updated:{' '}
                   {coin.lastUpdated
-                    ? new Date(coin.lastUpdated).toLocaleString()
+                    ? new Date(
+                        coin.lastUpdated
+                      ).toLocaleString()
                     : 'N/A'}
                 </p>
               </div>
 
-              <CoinChart coinId={coin.id} />
+              {/* Chart Section */}
+              <div className="space-y-3">
+                <div className="flex justify-end">
+                  <ChartRangeSelector
+                    value={range}
+                    onChange={setRange}
+                  />
+                </div>
 
+                <CoinChart
+                  coinId={coin.id}
+                />
+              </div>
+
+              {/* Links */}
               <div className="space-y-2">
                 {coin.website && (
                   <a
@@ -151,7 +198,8 @@ const Coin = () => {
 
                 {coin.categories.length > 0 && (
                   <p className="text-xs text-gray-400">
-                    Categories: {coin.categories.join(', ')}
+                    Categories:{' '}
+                    {coin.categories.join(', ')}
                   </p>
                 )}
               </div>
