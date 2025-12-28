@@ -1,5 +1,4 @@
 import { Link, useParams } from 'react-router-dom';
-import { useState } from 'react';
 
 import ErrorBoundary from '../components/ErrorBoundary';
 import AsyncState from '../components/AsyncState';
@@ -8,16 +7,10 @@ import { useCoin } from '../hooks/useCoin';
 
 import CoinDetailsSkeleton from '../components/skeletons/CoinDetailsSkeleton';
 import CoinChart from '../components/CoinChart';
-import ChartRangeSelector from '../components/ChartRangeSelector';
-
-import type { ChartRange } from '../types/coin-chart';
 
 const Coin = () => {
   const { id } = useParams<{ id: string }>();
   const { coin, loading, error } = useCoin(id);
-
-  // chart range state (UI concern)
-  const [range, setRange] = useState<ChartRange>(7);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
@@ -157,19 +150,10 @@ const Coin = () => {
                     : 'N/A'}
                 </p>
               </div>
-
-              {/* Chart Section */}
-              <div className="space-y-3">
-                <div className="flex justify-end">
-                  <ChartRangeSelector
-                    value={range}
-                    onChange={setRange}
-                  />
-                </div>
-
-                <CoinChart
-                  coinId={coin.id}
-                />
+              
+              {/* Chart */}
+              <div className="mt-8">
+                <CoinChart coinId={coin.id} />
               </div>
 
               {/* Links */}
