@@ -22,10 +22,17 @@ src/
 │   ├── ChartRangeSelector.tsx
 │   │
 │   └── skeletons/
-│       ├── CoinDetailsSkeleton.tsx
-│       ├── CoinCardSkeletonGrid.tsx
-│       ├── CoinCardSkeleton.tsx
-│       └── CoinChartSkeleton.tsx
+│   │   ├── CoinDetailsSkeleton.tsx
+│   │   ├── CoinCardSkeletonGrid.tsx
+│   │   ├── CoinCardSkeleton.tsx
+│   │   └── CoinChartSkeleton.tsx
+│   │
+│   └── coin/
+│       ├── CoinHeader.tsx
+│       ├── CoinStats.tsx
+│       ├── CoinChartSection.tsx
+│       └── CoinLinks.tsx
+│
 │
 ├── services/
 │   ├── cryptoApi.ts
