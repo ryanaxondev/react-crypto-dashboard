@@ -40,7 +40,7 @@ export type CoinApiResponse = {
 };
 
 // Clean model for UI (optimistic)
-export type CoinUIModel = {
+export type CoinDetails = {
   id: string;
   name: string;
   symbol: string;
@@ -70,3 +70,5 @@ export type CoinUIModel = {
 
   lastUpdated: string | null;
 };
+
+export type CoinUIModel = CoinDetails;
