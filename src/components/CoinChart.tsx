@@ -169,16 +169,21 @@ const CoinChart = ({ coinId }: CoinChartProps) => {
         {ranges.map((r) => (
           <button
             key={r}
+            disabled={loading}
             onClick={() =>
               dispatch({
                 type: 'SET_RANGE',
                 payload: r,
               })
             }
-            className={`px-3 py-1 rounded text-sm ${
+            className={`px-3 py-1 rounded text-sm transition ${
               state.range === r
                 ? 'bg-blue-500 text-white'
-                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                : 'bg-gray-700 text-gray-300'
+            } ${
+              loading
+                ? 'opacity-50 cursor-not-allowed'
+                : 'hover:bg-gray-600'
             }`}
           >
             {r === 365 ? '1Y' : `${r}D`}
