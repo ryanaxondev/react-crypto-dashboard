@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { fetchCoinChart } from '../services/cryptoApi';
 import { mapCoinChart } from '../services/chartMapper';
 import type { CoinChartData } from '../types/coin-chart';
@@ -60,8 +60,32 @@ export function useCoinChart(
     initialState
   );
 
+  // cache: future-proof key
+  const cacheRef = useRef<
+    Map<string, CoinChartData>
+  >(new Map());
+
   useEffect(() => {
     if (!coinId) return;
+
+    const cacheKey = JSON.stringify({
+      coinId,
+      days,
+    });
+
+    // cache hit → instant render
+    const cached = cacheRef.current.get(cacheKey);
+    if (cached) {
+      if (state.data === cached) {
+        return;
+      }
+
+      dispatch({
+        type: 'SUCCESS',
+        payload: cached,
+      });
+      return;
+    }
 
     const controller = new AbortController();
 
@@ -72,12 +96,20 @@ export function useCoinChart(
       days,
       controller.signal
     )
-      .then((raw) =>
+      .then((raw) => {
+        const mapped = mapCoinChart(raw);
+
+        // store in cache
+        cacheRef.current.set(
+          cacheKey,
+          mapped
+        );
+
         dispatch({
           type: 'SUCCESS',
-          payload: mapCoinChart(raw),
-        })
-      )
+          payload: mapped,
+        });
+      })
       .catch((err: unknown) => {
         if (
           err instanceof DOMException &&
@@ -96,7 +128,7 @@ export function useCoinChart(
       });
 
     return () => controller.abort();
-  }, [coinId, days]);
+  }, [coinId, days, state.data]);
 
   return state;
 }
