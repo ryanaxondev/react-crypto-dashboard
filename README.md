@@ -21,17 +21,23 @@ src/
 │   ├── CoinChart.tsx
 │   ├── ChartRangeSelector.tsx
 │   │
-│   └── skeletons/
+│   ├── skeletons/
 │   │   ├── CoinDetailsSkeleton.tsx
 │   │   ├── CoinCardSkeletonGrid.tsx
 │   │   ├── CoinCardSkeleton.tsx
 │   │   └── CoinChartSkeleton.tsx
 │   │
-│   └── coin/
-│       ├── CoinHeader.tsx
-│       ├── CoinStats.tsx
-│       ├── CoinChartSection.tsx
-│       └── CoinLinks.tsx
+│   ├── coin/
+│   │   ├── CoinHeader.tsx
+│   │   ├── CoinStats.tsx
+│   │   ├── CoinChartSection.tsx
+│   │   └── CoinLinks.tsx
+│   │
+│   └── coin-chart/
+│       ├── CoinChart.container.tsx
+│       ├── CoinChartView.tsx
+│       ├── CoinChartRange.tsx
+│       └── coinChart.utils.ts
 │
 │
 ├── services/

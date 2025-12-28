@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import Coin from './pages/Coin';
 import About from './pages/About';
 import NotFound from './pages/NotFound';
+import './lib/chart';
 
 const App = () => {
   return (
