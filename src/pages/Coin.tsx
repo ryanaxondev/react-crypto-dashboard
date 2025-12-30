@@ -14,7 +14,7 @@ import CoinLinks from '../components/coin/CoinLinks';
 
 const Coin = () => {
   const { id } = useParams<{ id: string }>();
-  const { coin, loading, error } = useCoin(id);
+  const { data: coin, loading, error } = useCoin(id);
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">

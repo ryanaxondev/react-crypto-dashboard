@@ -7,11 +7,17 @@ import { mapCoinApiToUI } from './coinMapper';
 
 const BASE_URL = import.meta.env.VITE_COINS_API_URL;
 
+/* ------------------------------------------------------------------ */
+/* Coins list                                                         */
+/* ------------------------------------------------------------------ */
+
 export const fetchCoins = async (
-  limit: number
+  limit: number,
+  signal?: AbortSignal
 ): Promise<Coin[]> => {
   const res = await fetch(
-    `${BASE_URL}&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false`
+    `${BASE_URL}&order=market_cap_desc&per_page=${limit}&page=1&sparkline=false`,
+    { signal }
   );
 
   if (!res.ok) {
@@ -21,11 +27,17 @@ export const fetchCoins = async (
   return res.json();
 };
 
+/* ------------------------------------------------------------------ */
+/* Coin details                                                       */
+/* ------------------------------------------------------------------ */
+
 export const fetchCoinById = async (
-  id: string
+  id: string,
+  signal?: AbortSignal
 ): Promise<CoinUIModel> => {
   const res = await fetch(
-    `https://api.coingecko.com/api/v3/coins/${id}`
+    `https://api.coingecko.com/api/v3/coins/${id}`,
+    { signal }
   );
 
   if (!res.ok) {
@@ -35,6 +47,10 @@ export const fetchCoinById = async (
   const data: CoinApiResponse = await res.json();
   return mapCoinApiToUI(data);
 };
+
+/* ------------------------------------------------------------------ */
+/* Coin chart                                                         */
+/* ------------------------------------------------------------------ */
 
 export const fetchCoinChart = async (
   coinId: string,
@@ -52,4 +68,3 @@ export const fetchCoinChart = async (
 
   return res.json();
 };
-

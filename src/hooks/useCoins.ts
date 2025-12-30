@@ -1,20 +1,20 @@
 import { useEffect, useReducer } from 'react';
-import { fetchCoinById } from '../services/cryptoApi';
-import type { CoinUIModel } from '../types/coin-details';
+import { fetchCoins } from '../services/cryptoApi';
+import type { Coin } from '../types/coin';
 
 type State = {
-  data: CoinUIModel | null;
+  data: Coin[];
   loading: boolean;
   error: string | null;
 };
 
 type Action =
   | { type: 'START' }
-  | { type: 'SUCCESS'; payload: CoinUIModel }
+  | { type: 'SUCCESS'; payload: Coin[] }
   | { type: 'ERROR'; payload: string };
 
 const initialState: State = {
-  data: null,
+  data: [],
   loading: false,
   error: null,
 };
@@ -22,29 +22,27 @@ const initialState: State = {
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'START':
-      return { data: null, loading: true, error: null };
+      return { ...state, loading: true, error: null };
 
     case 'SUCCESS':
       return { data: action.payload, loading: false, error: null };
 
     case 'ERROR':
-      return { data: null, loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload };
 
     default:
       return state;
   }
 }
 
-export function useCoin(id?: string) {
+export function useCoins(limit: number) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    if (!id) return;
-
     const controller = new AbortController();
     dispatch({ type: 'START' });
 
-    fetchCoinById(id, controller.signal)
+    fetchCoins(limit, controller.signal)
       .then((data) =>
         dispatch({ type: 'SUCCESS', payload: data })
       )
@@ -56,12 +54,12 @@ export function useCoin(id?: string) {
           payload:
             err instanceof Error
               ? err.message
-              : 'Failed to load coin',
+              : 'Failed to load coins',
         });
       });
 
     return () => controller.abort();
-  }, [id]);
+  }, [limit]);
 
   return state;
 }

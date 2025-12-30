@@ -47,6 +47,7 @@ src/
 │
 ├── hooks/
 │   ├── useCoinChart.ts
+│   ├── useCoins.ts
 │   └── useCoin.ts
 │
 ├── types/
@@ -55,6 +56,7 @@ src/
 │   └── coin-details.ts
 │
 ├── lib/
+│   ├── coinList.utils.ts
 │   └── chart.ts
 │
 ├── App.tsx
