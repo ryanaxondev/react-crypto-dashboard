@@ -49,6 +49,7 @@ src/
 │   ├── useCoinChart.ts
 │   ├── useCoins.ts
 │   ├── useChartRangeParam.ts
+│   ├── useSyncedSearchParam.ts
 │   └── useCoin.ts
 │
 ├── types/
