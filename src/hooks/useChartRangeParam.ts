@@ -1,11 +1,17 @@
 import { useSearchParams } from 'react-router-dom';
-
-export type ChartRange = 7 | 30 | 365;
+import type { ChartRange } from '../types/coin-chart';
 
 const DEFAULT_RANGE: ChartRange = 7;
-const ALLOWED_RANGES: ChartRange[] = [7, 30, 365];
+const ALLOWED_RANGES: readonly ChartRange[] = [
+  7,
+  30,
+  365,
+];
 
-export function useChartRangeParam() {
+export function useChartRangeParam(): [
+  ChartRange,
+  (next: ChartRange) => void
+] {
   const [params, setParams] = useSearchParams();
 
   const raw = params.get('range');
@@ -27,5 +33,5 @@ export function useChartRangeParam() {
     setParams(nextParams, { replace: true });
   };
 
-  return { range, setRange };
+  return [range, setRange];
 }

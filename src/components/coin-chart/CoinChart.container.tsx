@@ -12,7 +12,7 @@ type Props = {
 };
 
 const CoinChartContainer = ({ coinId }: Props) => {
-  const { range, setRange } = useChartRangeParam();
+  const [range, setRange] = useChartRangeParam();
 
   const { data, loading, error } = useCoinChart(
     coinId,
