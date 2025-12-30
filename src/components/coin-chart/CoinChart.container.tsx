@@ -1,55 +1,30 @@
-import { useReducer } from 'react';
-
 import type { ChartRange } from '../../types/coin-chart';
+
 import { useCoinChart } from '../../hooks/useCoinChart';
+import { useChartRangeParam } from '../../hooks/useChartRangeParam';
 
 import CoinChartRange from './CoinChartRange';
 import CoinChartView from './CoinChartView';
 import CoinChartSkeleton from '../skeletons/CoinChartSkeleton';
-
-type State = {
-  range: ChartRange;
-};
-
-type Action = {
-  type: 'SET_RANGE';
-  payload: ChartRange;
-};
-
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'SET_RANGE':
-      return { range: action.payload };
-    default:
-      return state;
-  }
-}
 
 type Props = {
   coinId: string;
 };
 
 const CoinChartContainer = ({ coinId }: Props) => {
-  const [state, dispatch] = useReducer(reducer, {
-    range: 7,
-  });
+  const { range, setRange } = useChartRangeParam();
 
   const { data, loading, error } = useCoinChart(
     coinId,
-    state.range
+    range as ChartRange
   );
 
   return (
     <div className="w-full">
       <CoinChartRange
-        value={state.range}
+        value={range as ChartRange}
         disabled={loading}
-        onChange={(r) =>
-          dispatch({
-            type: 'SET_RANGE',
-            payload: r,
-          })
-        }
+        onChange={setRange}
       />
 
       {!data && loading && <CoinChartSkeleton />}

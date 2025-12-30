@@ -48,6 +48,7 @@ src/
 ├── hooks/
 │   ├── useCoinChart.ts
 │   ├── useCoins.ts
+│   ├── useChartRangeParam.ts
 │   └── useCoin.ts
 │
 ├── types/
