@@ -17,18 +17,18 @@ import CoinCardSkeletonGrid from '../components/skeletons/CoinCardSkeletonGrid';
 import { filterAndSortCoins } from '../lib/coinList.utils';
 
 function Home() {
-  /* ---------------- URL-synced state ---------------- */
+  /* ---------------- URL state ---------------- */
 
   const {
     limit,
-    setLimit,
     sortBy,
-    setSortBy,
     filter,
+    setLimit,
+    setSortBy,
     setFilter,
   } = useHomeSearchParams();
 
-  /* ---------------- Data fetching ---------------- */
+  /* ---------------- Data ---------------- */
 
   const {
     data: coins = [],
@@ -36,7 +36,7 @@ function Home() {
     error,
   } = useCoins(limit);
 
-  /* ---------------- Derived data ---------------- */
+  /* ---------------- Derived ---------------- */
 
   const debouncedFilter =
     useDebouncedValue(filter, 300);
@@ -83,7 +83,9 @@ function Home() {
         loading={loading}
         error={error}
         data={visibleCoins}
-        loader={<CoinCardSkeletonGrid count={limit} />}
+        loader={
+          <CoinCardSkeletonGrid count={limit} />
+        }
         emptyFallback={
           <p className="text-center text-gray-400">
             No coins match your filter.
