@@ -50,6 +50,7 @@ src/
 │   ├── useCoins.ts
 │   ├── useChartRangeParam.ts
 │   ├── useSyncedSearchParam.ts
+│   ├── useDebouncedValue.ts
 │   └── useCoin.ts
 │
 ├── types/

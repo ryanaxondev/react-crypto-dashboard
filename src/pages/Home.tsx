@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { useCoins } from '../hooks/useCoins';
 import { useSyncedSearchParam } from '../hooks/useSyncedSearchParam';
+import { useDebouncedValue } from '../hooks/useDebouncedValue';
 
 import type { Coin } from '../types/coin';
 
@@ -15,6 +16,10 @@ import CoinCardSkeletonGrid from '../components/skeletons/CoinCardSkeletonGrid';
 
 import { filterAndSortCoins } from '../lib/coinList.utils';
 
+/* ------------------------------------------------------------------ */
+/* Types & constants                                                   */
+/* ------------------------------------------------------------------ */
+
 type SortOption =
   | 'market_cap_desc'
   | 'price_desc'
@@ -22,27 +27,35 @@ type SortOption =
   | 'change_desc'
   | 'change_asc';
 
-const Home = () => {
+const LIMIT_OPTIONS = [10, 20, 50, 100] as const;
+
+const SORT_OPTIONS: readonly SortOption[] = [
+  'market_cap_desc',
+  'price_desc',
+  'price_asc',
+  'change_desc',
+  'change_asc',
+];
+
+/* ------------------------------------------------------------------ */
+/* Component                                                           */
+/* ------------------------------------------------------------------ */
+
+function Home() {
   /* ---------------- URL-synced state ---------------- */
 
   const [limit, setLimit] =
     useSyncedSearchParam<number>({
       key: 'limit',
       defaultValue: 10,
-      allowed: [10, 20, 50, 100],
+      allowed: LIMIT_OPTIONS,
     });
 
   const [sortBy, setSortBy] =
     useSyncedSearchParam<SortOption>({
       key: 'sort',
       defaultValue: 'market_cap_desc',
-      allowed: [
-        'market_cap_desc',
-        'price_desc',
-        'price_asc',
-        'change_desc',
-        'change_asc',
-      ],
+      allowed: SORT_OPTIONS,
     });
 
   const [filter, setFilter] =
@@ -61,9 +74,18 @@ const Home = () => {
 
   /* ---------------- Derived data ---------------- */
 
+  // Prevent URL + expensive filtering on every keystroke
+  const debouncedFilter =
+    useDebouncedValue(filter, 300);
+
   const visibleCoins = useMemo(
-    () => filterAndSortCoins(coins, filter, sortBy),
-    [coins, filter, sortBy]
+    () =>
+      filterAndSortCoins(
+        coins,
+        debouncedFilter,
+        sortBy
+      ),
+    [coins, debouncedFilter, sortBy]
   );
 
   /* ---------------- Render ---------------- */
@@ -98,7 +120,11 @@ const Home = () => {
         loading={loading}
         error={error}
         data={visibleCoins}
-        loader={<CoinCardSkeletonGrid count={limit} />}
+        loader={
+          <CoinCardSkeletonGrid
+            count={limit}
+          />
+        }
         emptyFallback={
           <p className="text-center text-gray-400">
             No coins match your filter.
@@ -117,6 +143,6 @@ const Home = () => {
       </AsyncState>
     </div>
   );
-};
+}
 
 export default Home;
