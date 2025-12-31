@@ -1,6 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useCoins } from '../hooks/useCoins';
+import { useSyncedSearchParam } from '../hooks/useSyncedSearchParam';
+
 import type { Coin } from '../types/coin';
 
 import CoinCard from '../components/CoinCard';
@@ -21,12 +23,33 @@ type SortOption =
   | 'change_asc';
 
 const Home = () => {
-  /* ---------------- UI state ---------------- */
+  /* ---------------- URL-synced state ---------------- */
 
-  const [limit, setLimit] = useState<number>(10);
-  const [filter, setFilter] = useState<string>('');
+  const [limit, setLimit] =
+    useSyncedSearchParam<number>({
+      key: 'limit',
+      defaultValue: 10,
+      allowed: [10, 20, 50, 100],
+    });
+
   const [sortBy, setSortBy] =
-    useState<SortOption>('market_cap_desc');
+    useSyncedSearchParam<SortOption>({
+      key: 'sort',
+      defaultValue: 'market_cap_desc',
+      allowed: [
+        'market_cap_desc',
+        'price_desc',
+        'price_asc',
+        'change_desc',
+        'change_asc',
+      ],
+    });
+
+  const [filter, setFilter] =
+    useSyncedSearchParam<string>({
+      key: 'filter',
+      defaultValue: '',
+    });
 
   /* ---------------- Data fetching ---------------- */
 
