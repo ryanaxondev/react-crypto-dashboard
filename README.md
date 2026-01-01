@@ -37,6 +37,7 @@ src/
 │       ├── CoinChart.container.tsx
 │       ├── CoinChartView.tsx
 │       ├── CoinChartRange.tsx
+│       ├── chartPresets.ts
 │       └── coinChart.utils.ts
 │
 │
