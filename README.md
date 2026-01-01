@@ -49,6 +49,7 @@ src/
 │   ├── useCoinChart.ts
 │   ├── useCoins.ts
 │   ├── useChartRangeParam.ts
+│   ├── useChartSearchParams.ts
 │   ├── useSyncedSearchParam.ts
 │   ├── useDebouncedValue.ts
 │   ├── useHomeSearchParams.ts

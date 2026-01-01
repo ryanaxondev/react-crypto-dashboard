@@ -1,7 +1,5 @@
-import type { ChartRange } from '../../types/coin-chart';
-
+import { useChartSearchParams } from '../../hooks/useChartSearchParams';
 import { useCoinChart } from '../../hooks/useCoinChart';
-import { useChartRangeParam } from '../../hooks/useChartRangeParam';
 
 import CoinChartRange from './CoinChartRange';
 import CoinChartView from './CoinChartView';
@@ -12,22 +10,23 @@ type Props = {
 };
 
 const CoinChartContainer = ({ coinId }: Props) => {
-  const [range, setRange] = useChartRangeParam();
+  const { range, setRange } =
+    useChartSearchParams();
 
-  const { data, loading, error } = useCoinChart(
-    coinId,
-    range as ChartRange
-  );
+  const { data, loading, error } =
+    useCoinChart(coinId, range);
 
   return (
     <div className="w-full">
       <CoinChartRange
-        value={range as ChartRange}
+        value={range}
         disabled={loading}
         onChange={setRange}
       />
 
-      {!data && loading && <CoinChartSkeleton />}
+      {!data && loading && (
+        <CoinChartSkeleton />
+      )}
 
       {data && (
         <CoinChartView
