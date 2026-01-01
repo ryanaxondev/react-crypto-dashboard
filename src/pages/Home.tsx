@@ -16,16 +16,37 @@ import CoinCardSkeletonGrid from '../components/skeletons/CoinCardSkeletonGrid';
 
 import { filterAndSortCoins } from '../lib/coinList.utils';
 
+/* -------------------------------------------------- */
+/* Preset UI config (view-only, no logic)             */
+/* -------------------------------------------------- */
+
+const HOME_PRESETS = [
+  {
+    key: 'default',
+    label: 'All',
+  },
+  {
+    key: 'top-gainers',
+    label: '🔥 Top Gainers',
+  },
+  {
+    key: 'trending',
+    label: '📈 Trending',
+  },
+] as const;
+
 function Home() {
-  /* ---------------- URL state ---------------- */
+  /* ---------------- URL-backed state ---------------- */
 
   const {
     limit,
     sortBy,
     filter,
+    view,
     setLimit,
     setSortBy,
     setFilter,
+    setView,
   } = useHomeSearchParams();
 
   /* ---------------- Data ---------------- */
@@ -59,6 +80,28 @@ function Home() {
         🚀 Crypto Dashboard
       </h1>
 
+      {/* ---------------- Preset Views ---------------- */}
+      <div className="flex gap-2 mb-6">
+        {HOME_PRESETS.map((preset) => {
+          const active = view === preset.key;
+
+          return (
+            <button
+              key={preset.key}
+              onClick={() => setView(preset.key)}
+              className={`px-3 py-1 rounded text-sm transition ${
+                active
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              }`}
+            >
+              {preset.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ---------------- Controls ---------------- */}
       <div className="mb-8 rounded-xl bg-gray-800 p-4 shadow flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex-1">
           <FilterInput
@@ -79,6 +122,7 @@ function Home() {
         </div>
       </div>
 
+      {/* ---------------- List ---------------- */}
       <AsyncState
         loading={loading}
         error={error}

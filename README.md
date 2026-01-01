@@ -7,7 +7,11 @@ src/
 │   ├── Home.tsx
 │   ├── Coin.tsx
 │   ├── About.tsx
-│   └── NotFound.tsx
+│   ├── NotFound.tsx
+│   │
+│   └── home/
+│       └── homePresets.ts
+│
 │
 ├── components/
 │   ├── Layout.tsx
@@ -58,7 +62,8 @@ src/
 ├── types/
 │   ├── coin.ts
 │   ├── coin-chart.ts
-│   └── coin-details.ts
+│   ├── coin-details.ts
+│   └── home.ts
 │
 ├── lib/
 │   ├── coinList.utils.ts

@@ -1,63 +1,68 @@
 import { useSyncedSearchParams } from './useSyncedSearchParam';
+import { HOME_PRESETS } from '../pages/home/homePresets';
+import type { SortOption } from '../types/home';
 
-/* ---------------------------------------------
- * Types
- * ------------------------------------------- */
-
-export type SortOption =
-  | 'market_cap_desc'
-  | 'price_desc'
-  | 'price_asc'
-  | 'change_desc'
-  | 'change_asc';
-
-export type HomeSearchParams = {
+type HomeSearchState = {
+  view: string | null;
   limit: number;
   sort: SortOption;
   filter: string;
 };
 
-/* ---------------------------------------------
- * Constants (stable identity)
- * ------------------------------------------- */
-
-const LIMIT_OPTIONS = [10, 20, 50, 100] as const;
-
-const SORT_OPTIONS: readonly SortOption[] = [
-  'market_cap_desc',
-  'price_desc',
-  'price_asc',
-  'change_desc',
-  'change_asc',
-] as const;
-
-/* ---------------------------------------------
- * Hook
- * ------------------------------------------- */
-
 export function useHomeSearchParams() {
-  const { values, set, setMany, reset } =
-    useSyncedSearchParams<HomeSearchParams>({
+  const { values, set, setMany } =
+    useSyncedSearchParams<HomeSearchState>({
+      view: { defaultValue: null },
       limit: {
         defaultValue: 10,
-        allowed: LIMIT_OPTIONS,
+        allowed: [10, 20, 50, 100],
       },
       sort: {
         defaultValue: 'market_cap_desc',
-        allowed: SORT_OPTIONS,
+        allowed: [
+          'market_cap_desc',
+          'price_desc',
+          'price_asc',
+          'change_desc',
+          'change_asc',
+        ],
       },
-      filter: {
-        defaultValue: '',
-      },
+      filter: { defaultValue: '' },
     });
+
+  /* -----------------------------------------
+   * Preset application
+   * --------------------------------------- */
+
+  const applyPreset = (key: string) => {
+    const preset = HOME_PRESETS.find(
+      (p) => p.key === key
+    );
+
+    if (!preset) return;
+
+    setMany({
+      view: preset.key,
+      limit: preset.limit,
+      sort: preset.sort,
+    });
+  };
+
+  /* -----------------------------------------
+   * Public, consumer-friendly API
+   * --------------------------------------- */
 
   return {
     /* values */
+    view: values.view,
     limit: values.limit,
     sortBy: values.sort,
     filter: values.filter,
 
     /* setters */
+    setView: (view: string | null) =>
+      set('view', view),
+
     setLimit: (limit: number) =>
       set('limit', limit),
 
@@ -68,7 +73,6 @@ export function useHomeSearchParams() {
       set('filter', filter),
 
     /* advanced */
-    setMany,
-    reset,
+    applyPreset,
   };
 }
