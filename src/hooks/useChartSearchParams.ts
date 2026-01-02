@@ -12,12 +12,18 @@ const RANGE_OPTIONS: readonly ChartRange[] = [
 
 export function useChartSearchParams() {
   const { values, set } =
-    useSyncedSearchParams<{ range: ChartRange }>({
-      range: {
-        defaultValue: DEFAULT_RANGE,
-        allowed: RANGE_OPTIONS,
+    useSyncedSearchParams<{ range: ChartRange }>(
+      {
+        range: {
+          defaultValue: DEFAULT_RANGE,
+          allowed: RANGE_OPTIONS,
+        },
       },
-    });
+      {
+        persistKey: 'persisted:chart',
+        persistedKeys: ['range'],
+      }
+    );
 
   return {
     range: values.range,

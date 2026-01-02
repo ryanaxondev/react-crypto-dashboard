@@ -1,7 +1,6 @@
 import { useSyncedSearchParams } from './useSyncedSearchParam';
 
 import { HOME_PRESETS } from '@/pages/home/homePresets';
-
 import type { SortOption } from '@/types/home';
 
 type HomeSearchState = {
@@ -13,27 +12,36 @@ type HomeSearchState = {
 
 export function useHomeSearchParams() {
   const { values, set, setMany } =
-    useSyncedSearchParams<HomeSearchState>({
-      view: { defaultValue: null },
-      limit: {
-        defaultValue: 10,
-        allowed: [10, 20, 50, 100],
+    useSyncedSearchParams<HomeSearchState>(
+      {
+        view: { defaultValue: null },
+
+        limit: {
+          defaultValue: 10,
+          allowed: [10, 20, 50, 100],
+        },
+
+        sort: {
+          defaultValue: 'market_cap_desc',
+          allowed: [
+            'market_cap_desc',
+            'price_desc',
+            'price_asc',
+            'change_desc',
+            'change_asc',
+          ],
+        },
+
+        filter: { defaultValue: '' },
       },
-      sort: {
-        defaultValue: 'market_cap_desc',
-        allowed: [
-          'market_cap_desc',
-          'price_desc',
-          'price_asc',
-          'change_desc',
-          'change_asc',
-        ],
-      },
-      filter: { defaultValue: '' },
-    });
+      {
+        persistKey: 'persisted:home',
+        persistedKeys: ['view', 'limit', 'sort'],
+      }
+    );
 
   /* -----------------------------------------
-   * Preset application
+   * Preset application (declarative)
    * --------------------------------------- */
 
   const applyPreset = (key: string) => {
@@ -51,7 +59,7 @@ export function useHomeSearchParams() {
   };
 
   /* -----------------------------------------
-   * Public, consumer-friendly API
+   * Public API (consumer-friendly)
    * --------------------------------------- */
 
   return {

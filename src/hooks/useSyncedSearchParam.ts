@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 /* ---------------------------------------------
@@ -16,6 +16,11 @@ type ConfigMap<T> = {
   [K in keyof T]: ParamConfig<T[K]>;
 };
 
+type PersistOptions<T> = {
+  persistKey?: string;
+  persistedKeys?: readonly (keyof T)[];
+};
+
 /* ---------------------------------------------
  * Helpers
  * ------------------------------------------- */
@@ -28,7 +33,6 @@ function defaultDeserialize<T>(
   value: string,
   fallback: T
 ): T {
-  // number
   if (typeof fallback === 'number') {
     const parsed = Number(value);
     return (isNaN(parsed)
@@ -36,7 +40,6 @@ function defaultDeserialize<T>(
       : (parsed as T));
   }
 
-  // string / others
   return value as unknown as T;
 }
 
@@ -46,8 +49,68 @@ function defaultDeserialize<T>(
 
 export function useSyncedSearchParams<
   T extends Record<string, unknown>
->(config: ConfigMap<T>) {
+>(
+  config: ConfigMap<T>,
+  options: PersistOptions<T> = {}
+) {
   const [params, setParams] = useSearchParams();
+
+  const {
+    persistKey,
+    persistedKeys,
+  } = options;
+
+  const hasHydratedRef = useRef(false);
+
+  /* -----------------------------------------
+   * First-mount hydration (URL > localStorage)
+   * --------------------------------------- */
+
+  useEffect(() => {
+    if (!persistKey || hasHydratedRef.current) return;
+
+    hasHydratedRef.current = true;
+
+    // URL already has params → authoritative
+    const hasAnyParam = Object.keys(config).some(
+      (key) => params.has(key)
+    );
+
+    if (hasAnyParam) return;
+
+    const raw = localStorage.getItem(persistKey);
+    if (!raw) return;
+
+    try {
+      const snapshot = JSON.parse(raw) as Partial<T>;
+      const nextParams = new URLSearchParams(params);
+
+      (persistedKeys ?? []).forEach((key) => {
+        const value = snapshot[key];
+        if (value === undefined) return;
+
+        const { serialize } = config[key];
+        const encoded =
+          serialize?.(value) ??
+          defaultSerialize(value);
+
+        nextParams.set(
+          key as string,
+          encoded
+        );
+      });
+
+      setParams(nextParams, { replace: true });
+    } catch {
+      // corrupted snapshot → ignore silently
+    }
+  }, [
+    persistKey,
+    persistedKeys,
+    params,
+    setParams,
+    config,
+  ]);
 
   /* -----------------------------------------
    * Read & normalize current values
@@ -93,6 +156,29 @@ export function useSyncedSearchParams<
   }, [params, config]);
 
   /* -----------------------------------------
+   * Persistence mirror (URL → localStorage)
+   * --------------------------------------- */
+
+  useEffect(() => {
+    if (!persistKey || !persistedKeys) return;
+
+    const snapshot: Partial<T> = {};
+
+    persistedKeys.forEach((key) => {
+      snapshot[key] = values[key];
+    });
+
+    try {
+      localStorage.setItem(
+        persistKey,
+        JSON.stringify(snapshot)
+      );
+    } catch {
+      // ignore quota / serialization issues
+    }
+  }, [values, persistKey, persistedKeys]);
+
+  /* -----------------------------------------
    * Internal setter
    * --------------------------------------- */
 
@@ -135,11 +221,14 @@ export function useSyncedSearchParams<
   );
 
   /* -----------------------------------------
-   * Public API
+   * Public API (unchanged)
    * --------------------------------------- */
 
   const set = useCallback(
-    <K extends keyof T>(key: K, value: T[K]) => {
+    <K extends keyof T>(
+      key: K,
+      value: T[K]
+    ) => {
       const next: Partial<T> = {};
       next[key] = value;
       apply(next);
