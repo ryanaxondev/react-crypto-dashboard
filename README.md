@@ -57,6 +57,7 @@ src/
 │   ├── useSyncedSearchParam.ts
 │   ├── useDebouncedValue.ts
 │   ├── useHomeSearchParams.ts
+│   ├── useSavedViews.ts
 │   └── useCoin.ts
 │
 ├── types/
