@@ -8,7 +8,7 @@ import type {
   TooltipItem,
 } from 'chart.js';
 
-import type { CoinChartData } from '../../types/coin-chart';
+import type { CoinChartData } from '@/types/coin-chart';
 import { getGradient } from './coinChart.utils';
 
 type Props = {

@@ -1,16 +1,18 @@
 import { useEffect, useReducer } from 'react';
-import { fetchCoinById } from '../services/cryptoApi';
-import type { CoinUIModel } from '../types/coin-details';
+
+import { fetchCoinById } from '@/services/cryptoApi';
+
+import type { CoinDetails } from '@/types/coin-details';
 
 type State = {
-  data: CoinUIModel | null;
+  data: CoinDetails | null;
   loading: boolean;
   error: string | null;
 };
 
 type Action =
   | { type: 'START' }
-  | { type: 'SUCCESS'; payload: CoinUIModel }
+  | { type: 'SUCCESS'; payload: CoinDetails }
   | { type: 'ERROR'; payload: string };
 
 const initialState: State = {

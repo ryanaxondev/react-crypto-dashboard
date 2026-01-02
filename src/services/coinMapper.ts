@@ -1,11 +1,8 @@
-import type {
-  CoinApiResponse,
-  CoinUIModel,
-} from '../types/coin-details';
+import type { CoinApiResponse, CoinDetails } from '@/types/coin-details';
 
 export const mapCoinApiToUI = (
   coin: CoinApiResponse
-): CoinUIModel => {
+): CoinDetails => {
   const market = coin.market_data;
 
   return {

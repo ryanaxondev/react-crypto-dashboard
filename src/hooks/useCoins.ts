@@ -1,6 +1,8 @@
 import { useEffect, useReducer } from 'react';
-import { fetchCoins } from '../services/cryptoApi';
-import type { Coin } from '../types/coin';
+
+import { fetchCoins } from '@/services/cryptoApi';
+
+import type { Coin } from '@/types/coin';
 
 type State = {
   data: Coin[];

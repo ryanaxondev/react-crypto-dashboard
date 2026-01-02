@@ -70,5 +70,3 @@ export type CoinDetails = {
 
   lastUpdated: string | null;
 };
-
-export type CoinUIModel = CoinDetails;

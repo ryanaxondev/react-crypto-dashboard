@@ -1,9 +1,9 @@
-import { useChartSearchParams } from '../../hooks/useChartSearchParams';
-import { useCoinChart } from '../../hooks/useCoinChart';
+import { useChartSearchParams } from '@/hooks/useChartSearchParams';
+import { useCoinChart } from '@/hooks/useCoinChart';
 
 import CoinChartRange from './CoinChartRange';
 import CoinChartView from './CoinChartView';
-import CoinChartSkeleton from '../skeletons/CoinChartSkeleton';
+import CoinChartSkeleton from '@/components/skeletons/CoinChartSkeleton';
 
 type Props = {
   coinId: string;

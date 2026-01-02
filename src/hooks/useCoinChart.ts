@@ -1,7 +1,9 @@
 import { useEffect, useReducer, useRef } from 'react';
-import { fetchCoinChart } from '../services/cryptoApi';
-import { mapCoinChart } from '../services/chartMapper';
-import type { CoinChartData } from '../types/coin-chart';
+
+import { fetchCoinChart } from '@/services/cryptoApi';
+import { mapCoinChart } from '@/services/chartMapper';
+
+import type { CoinChartData } from '@/types/coin-chart';
 
 type State = {
   data: CoinChartData | null;

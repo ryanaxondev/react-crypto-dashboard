@@ -1,4 +1,4 @@
-import type { SortOption } from '../../types/home';
+import type { SortOption } from '@/types/home';
 
 export type HomePreset = {
   key: string;

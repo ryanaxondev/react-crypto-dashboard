@@ -1,4 +1,4 @@
-import type { ChartRange } from '../../types/coin-chart';
+import type { ChartRange } from '@/types/coin-chart';
 
 export type ChartPreset = {
   label: string;

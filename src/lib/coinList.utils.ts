@@ -1,4 +1,4 @@
-import type { Coin } from '../types/coin';
+import type { Coin } from '@/types/coin';
 
 type SortOption =
   | 'market_cap_desc'

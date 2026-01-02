@@ -1,5 +1,4 @@
-// components/coin/CoinChartSection.tsx
-import CoinChart from '../CoinChart';
+import CoinChart from '@/components/CoinChart';
 
 type Props = {
   coinId: string;

@@ -1,4 +1,5 @@
-import type { ChartRange } from '../../types/coin-chart';
+import type { ChartRange } from '@/types/coin-chart';
+
 import { CHART_PRESETS } from './chartPresets';
 
 type Props = {

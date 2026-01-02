@@ -1,7 +1,4 @@
-import type {
-  CoinChartData,
-  CoinChartPoint,
-} from '../types/coin-chart';
+import type { CoinChartData, CoinChartPoint } from '@/types/coin-chart';
 
 /**
  * Runtime type guard for CoinGecko market_chart response

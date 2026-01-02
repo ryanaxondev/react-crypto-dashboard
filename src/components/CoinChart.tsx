@@ -1,3 +1,3 @@
-import CoinChartContainer from './coin-chart/CoinChart.container';
+import CoinChartContainer from '@/components/coin-chart/CoinChart.container';
 
 export default CoinChartContainer;

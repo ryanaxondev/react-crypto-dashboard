@@ -1,5 +1,4 @@
-// components/coin/CoinLinks.tsx
-import type { CoinDetails } from '../../types/coin-details';
+import type { CoinDetails } from '@/types/coin-details';
 
 type Props = {
   coin: CoinDetails;

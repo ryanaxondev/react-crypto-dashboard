@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
 
-import { useCoins } from '../hooks/useCoins';
-import { useHomeSearchParams } from '../hooks/useHomeSearchParams';
-import { useDebouncedValue } from '../hooks/useDebouncedValue';
+import { useCoins } from '@/hooks/useCoins';
+import { useHomeSearchParams } from '@/hooks/useHomeSearchParams';
+import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 
-import type { Coin } from '../types/coin';
+import type { Coin } from '@/types/coin';
 
-import CoinCard from '../components/CoinCard';
-import LimitSelector from '../components/LimitSelector';
-import FilterInput from '../components/FilterInput';
-import SortSelector from '../components/SortSelector';
-import ErrorBoundary from '../components/ErrorBoundary';
-import AsyncState from '../components/AsyncState';
-import CoinCardSkeletonGrid from '../components/skeletons/CoinCardSkeletonGrid';
+import CoinCard from '@/components/CoinCard';
+import LimitSelector from '@/components/LimitSelector';
+import FilterInput from '@/components/FilterInput';
+import SortSelector from '@/components/SortSelector';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import AsyncState from '@/components/AsyncState';
+import CoinCardSkeletonGrid from '@/components/skeletons/CoinCardSkeletonGrid';
 
-import { filterAndSortCoins } from '../lib/coinList.utils';
+import { filterAndSortCoins } from '@/lib/coinList.utils';
 
 /* -------------------------------------------------- */
 /* Preset UI config (view-only, no logic)             */

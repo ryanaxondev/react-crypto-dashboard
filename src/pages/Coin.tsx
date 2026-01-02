@@ -1,16 +1,15 @@
 import { Link, useParams } from 'react-router-dom';
 
-import AsyncState from '../components/AsyncState';
-import ErrorBoundary from '../components/ErrorBoundary';
+import { useCoin } from '@/hooks/useCoin';
 
-import { useCoin } from '../hooks/useCoin';
+import AsyncState from '@/components/AsyncState';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import CoinDetailsSkeleton from '@/components/skeletons/CoinDetailsSkeleton';
 
-import CoinDetailsSkeleton from '../components/skeletons/CoinDetailsSkeleton';
-
-import CoinHeader from '../components/coin/CoinHeader';
-import CoinStats from '../components/coin/CoinStats';
-import CoinChartSection from '../components/coin/CoinChartSection';
-import CoinLinks from '../components/coin/CoinLinks';
+import CoinHeader from '@/components/coin/CoinHeader';
+import CoinStats from '@/components/coin/CoinStats';
+import CoinChartSection from '@/components/coin/CoinChartSection';
+import CoinLinks from '@/components/coin/CoinLinks';
 
 const Coin = () => {
   const { id } = useParams<{ id: string }>();

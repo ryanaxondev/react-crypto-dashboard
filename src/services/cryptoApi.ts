@@ -1,8 +1,6 @@
-import type { Coin } from '../types/coin';
-import type {
-  CoinApiResponse,
-  CoinUIModel,
-} from '../types/coin-details';
+import type { Coin } from '@/types/coin';
+import type { CoinApiResponse, CoinDetails } from '@/types/coin-details';
+
 import { mapCoinApiToUI } from './coinMapper';
 
 const BASE_URL = import.meta.env.VITE_COINS_API_URL;
@@ -34,7 +32,7 @@ export const fetchCoins = async (
 export const fetchCoinById = async (
   id: string,
   signal?: AbortSignal
-): Promise<CoinUIModel> => {
+): Promise<CoinDetails> => {
   const res = await fetch(
     `https://api.coingecko.com/api/v3/coins/${id}`,
     { signal }

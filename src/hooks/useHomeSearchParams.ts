@@ -1,6 +1,8 @@
 import { useSyncedSearchParams } from './useSyncedSearchParam';
-import { HOME_PRESETS } from '../pages/home/homePresets';
-import type { SortOption } from '../types/home';
+
+import { HOME_PRESETS } from '@/pages/home/homePresets';
+
+import type { SortOption } from '@/types/home';
 
 type HomeSearchState = {
   view: string | null;

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import type { Coin } from '../types/coin';
+
+import type { Coin } from '@/types/coin';
 
 type CoinCardProps = {
   coin: Coin;

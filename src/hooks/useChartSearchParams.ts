@@ -1,4 +1,5 @@
-import type { ChartRange } from '../types/coin-chart';
+import type { ChartRange } from '@/types/coin-chart';
+
 import { useSyncedSearchParams } from './useSyncedSearchParam';
 
 const DEFAULT_RANGE: ChartRange = 7;
