@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 type Props = {
   name: string;
@@ -16,30 +16,27 @@ export function SavedViewItem({
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(name);
 
-  useEffect(() => {
+  const startEdit = () => {
     setValue(name);
-  }, [name]);
+    setIsEditing(true);
+  };
 
-  const handleRename = () => {
-    if (!onRename) return;
+  const cancelEdit = () => {
+    setValue(name);
+    setIsEditing(false);
+  };
+
+  const commitEdit = () => {
+    if (!onRename) return cancelEdit();
 
     const trimmed = value.trim();
-    if (!trimmed) return;
+    if (!trimmed) return cancelEdit();
 
-    onRename(trimmed);
+    if (trimmed !== name) {
+      onRename(trimmed);
+    }
+
     setIsEditing(false);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setValue(name);
-  };
-
-  const handleDelete = () => {
-    const ok = window.confirm(
-      'Are you sure you want to delete this saved view?'
-    );
-    if (ok) onDelete();
   };
 
   return (
@@ -48,12 +45,13 @@ export function SavedViewItem({
         <input
           className="flex-1 rounded border px-2 py-1 text-sm"
           value={value}
+          autoFocus
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') handleRename();
-            if (e.key === 'Escape') handleCancelEdit();
+            if (e.key === 'Enter') commitEdit();
+            if (e.key === 'Escape') cancelEdit();
           }}
-          autoFocus
+          onBlur={cancelEdit}
         />
       ) : (
         <span className="text-sm font-medium">
@@ -61,41 +59,34 @@ export function SavedViewItem({
         </span>
       )}
 
-      <div className="flex items-center gap-1">
-        {isEditing ? (
+      {!isEditing && (
+        <div className="flex items-center gap-1">
           <button
-            className="text-xs text-green-600"
-            onClick={handleRename}
+            className="text-xs text-blue-600"
+            onClick={onApply}
           >
-            ✔
+            Apply
           </button>
-        ) : (
-          <>
-            <button
-              className="text-xs text-blue-600"
-              onClick={onApply}
-            >
-              Apply
-            </button>
 
-            {onRename && (
-              <button
-                className="text-xs text-muted-foreground"
-                onClick={() => setIsEditing(true)}
-              >
-                ✏
-              </button>
-            )}
-
+          {onRename && (
             <button
-              className="text-xs text-red-600"
-              onClick={handleDelete}
+              className="text-xs text-muted-foreground"
+              onClick={startEdit}
+              title="Rename"
             >
-              🗑
+              ✏
             </button>
-          </>
-        )}
-      </div>
+          )}
+
+          <button
+            className="text-xs text-red-600"
+            onClick={onDelete}
+            title="Delete"
+          >
+            🗑
+          </button>
+        </div>
+      )}
     </div>
   );
 }
