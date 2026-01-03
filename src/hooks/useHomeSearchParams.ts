@@ -3,12 +3,22 @@ import { useSyncedSearchParams } from './useSyncedSearchParam';
 import { HOME_PRESETS } from '@/pages/home/homePresets';
 import type { SortOption } from '@/types/home';
 
-type HomeSearchState = {
+/* ---------------------------------------------
+ * Types
+ * ------------------------------------------- */
+
+export type HomeSnapshot = {
   view: string | null;
   limit: number;
   sort: SortOption;
   filter: string;
 };
+
+type HomeSearchState = HomeSnapshot;
+
+/* ---------------------------------------------
+ * Hook
+ * ------------------------------------------- */
 
 export function useHomeSearchParams() {
   const { values, set, setMany } =
@@ -59,6 +69,21 @@ export function useHomeSearchParams() {
   };
 
   /* -----------------------------------------
+   * Snapshot helpers (Saved Views)
+   * --------------------------------------- */
+
+  const getSnapshot = (): HomeSnapshot => ({
+    view: values.view,
+    limit: values.limit,
+    sort: values.sort,
+    filter: values.filter,
+  });
+
+  const applySnapshot = (snapshot: HomeSnapshot) => {
+    setMany(snapshot);
+  };
+
+  /* -----------------------------------------
    * Public API (consumer-friendly)
    * --------------------------------------- */
 
@@ -82,7 +107,11 @@ export function useHomeSearchParams() {
     setFilter: (filter: string) =>
       set('filter', filter),
 
-    /* advanced */
+    /* presets */
     applyPreset,
+
+    /* saved views */
+    getSnapshot,
+    applySnapshot,
   };
 }

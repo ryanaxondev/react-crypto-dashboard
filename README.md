@@ -3,7 +3,11 @@
 ```
 src/
 │
-├── pages/
+├── App.tsx
+├── main.tsx
+├── index.css
+│
+├── pages/                # Route-level pages
 │   ├── Home.tsx
 │   ├── Coin.tsx
 │   ├── About.tsx
@@ -12,66 +16,65 @@ src/
 │   └── home/
 │       └── homePresets.ts
 │
-│
 ├── components/
-│   ├── Layout.tsx
-│   ├── CoinCard.tsx
+│   │
+│   ├── Layout.tsx        # App-level / shared layout
+│   ├── ErrorBoundary.tsx
+│   ├── AsyncState.tsx
+│   ├── Loader.tsx
+│   │
+│   ├── CoinCard.tsx      # Shared UI components
 │   ├── LimitSelector.tsx
 │   ├── FilterInput.tsx
 │   ├── SortSelector.tsx
-│   ├── ErrorBoundary.tsx
-│   ├── Loader.tsx
-│   ├── AsyncState.tsx
-│   ├── CoinChart.tsx
-│   ├── ChartRangeSelector.tsx
 │   │
-│   ├── skeletons/
-│   │   ├── CoinDetailsSkeleton.tsx
-│   │   ├── CoinCardSkeletonGrid.tsx
+│   ├── skeletons/        # Loading states
 │   │   ├── CoinCardSkeleton.tsx
+│   │   ├── CoinCardSkeletonGrid.tsx
+│   │   ├── CoinDetailsSkeleton.tsx
 │   │   └── CoinChartSkeleton.tsx
 │   │
-│   ├── coin/
+│   ├── coin/             # Coin domain components
 │   │   ├── CoinHeader.tsx
 │   │   ├── CoinStats.tsx
 │   │   ├── CoinChartSection.tsx
 │   │   └── CoinLinks.tsx
 │   │
-│   └── coin-chart/
-│       ├── CoinChart.container.tsx
-│       ├── CoinChartView.tsx
-│       ├── CoinChartRange.tsx
-│       ├── chartPresets.ts
-│       └── coinChart.utils.ts
+│   ├── coin-chart/       # Chart domain (isolated feature)
+│   │   ├── CoinChart.container.tsx
+│   │   ├── CoinChartView.tsx
+│   │   ├── CoinChartRange.tsx
+│   │   ├── chartPresets.ts
+│   │   └── coinChart.utils.ts
+│   │
+│   └── saved-views/      # Saved views feature
+│       ├── SavedViewsPanel.tsx
+│       ├── SavedViewItem.tsx
+│       └── SavedViewsEmpty.tsx
 │
-│
-├── services/
-│   ├── cryptoApi.ts
-│   ├── chartMapper.ts
-│   └── coinMapper.ts
-│
-├── hooks/
-│   ├── useCoinChart.ts
+├── hooks/                # Custom hooks
 │   ├── useCoins.ts
+│   ├── useCoin.ts
+│   ├── useCoinChart.ts
+│   ├── useSavedViews.ts
+│   ├── useHomeSearchParams.ts
 │   ├── useChartSearchParams.ts
 │   ├── useSyncedSearchParam.ts
-│   ├── useDebouncedValue.ts
-│   ├── useHomeSearchParams.ts
-│   ├── useSavedViews.ts
-│   └── useCoin.ts
+│   └── useDebouncedValue.ts
 │
-├── types/
+├── services/             # Data access & mapping
+│   ├── cryptoApi.ts
+│   ├── coinMapper.ts
+│   └── chartMapper.ts
+│
+├── types/                # Domain models
 │   ├── coin.ts
-│   ├── coin-chart.ts
 │   ├── coin-details.ts
+│   ├── coin-chart.ts
 │   └── home.ts
 │
-├── lib/
-│   ├── coinList.utils.ts
-│   └── chart.ts
-│
-├── App.tsx
-├── main.tsx
-└── index.css
+└── lib/                  # Pure utilities
+    ├── coinList.utils.ts
+    └── chart.ts
 
 ```

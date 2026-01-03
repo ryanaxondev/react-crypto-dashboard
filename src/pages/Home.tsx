@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useCoins } from '@/hooks/useCoins';
 import { useHomeSearchParams } from '@/hooks/useHomeSearchParams';
 import { useDebouncedValue } from '@/hooks/useDebouncedValue';
+import { useSavedViews } from '@/hooks/useSavedViews';
 
 import type { Coin } from '@/types/coin';
 
@@ -13,6 +14,7 @@ import SortSelector from '@/components/SortSelector';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import AsyncState from '@/components/AsyncState';
 import CoinCardSkeletonGrid from '@/components/skeletons/CoinCardSkeletonGrid';
+import { SavedViewsPanel } from '@/components/saved-views/SavedViewsPanel';
 
 import { filterAndSortCoins } from '@/lib/coinList.utils';
 
@@ -21,18 +23,9 @@ import { filterAndSortCoins } from '@/lib/coinList.utils';
 /* -------------------------------------------------- */
 
 const HOME_PRESETS = [
-  {
-    key: 'default',
-    label: 'All',
-  },
-  {
-    key: 'top-gainers',
-    label: '🔥 Top Gainers',
-  },
-  {
-    key: 'trending',
-    label: '📈 Trending',
-  },
+  { key: 'default', label: 'All' },
+  { key: 'top-gainers', label: '🔥 Top Gainers' },
+  { key: 'trending', label: '📈 Trending' },
 ] as const;
 
 function Home() {
@@ -47,7 +40,20 @@ function Home() {
     setSortBy,
     setFilter,
     setView,
+    getSnapshot,
+    applySnapshot,
   } = useHomeSearchParams();
+
+  /* ---------------- Saved Views ---------------- */
+
+  const {
+    views: savedViews,
+    saveView,
+    deleteView,
+    applyView,
+  } = useSavedViews<ReturnType<
+    typeof getSnapshot
+  >>('home');
 
   /* ---------------- Data ---------------- */
 
@@ -99,6 +105,29 @@ function Home() {
             </button>
           );
         })}
+      </div>
+
+      {/* ---------------- Saved Views ---------------- */}
+      <div className="mb-8">
+        <SavedViewsPanel
+          views={savedViews}
+          onSave={(name) =>
+            saveView(name, getSnapshot())
+          }
+          onApply={(slug) => {
+            const snapshot = applyView(slug);
+            if (snapshot) {
+              applySnapshot(snapshot);
+            }
+          }}
+          onRename={(slug, name) => {
+            const snapshot = applyView(slug);
+            if (!snapshot) return;
+            deleteView(slug);
+            saveView(name, snapshot);
+          }}
+          onDelete={deleteView}
+        />
       </div>
 
       {/* ---------------- Controls ---------------- */}
