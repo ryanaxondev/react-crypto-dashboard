@@ -7,7 +7,7 @@ type Props<T> = {
   views: SavedView<T>[];
   onSave: (name: string) => void;
   onApply: (slug: string) => void;
-  onRename: (slug: string, name: string) => void;
+  onRename?: (slug: string, name: string) => void;
   onDelete: (slug: string) => void;
 };
 
@@ -27,6 +27,15 @@ export function SavedViewsPanel<T>({
 
     onSave(name.trim());
     setName('');
+  };
+
+  const handleDelete = (slug: string) => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete this view?'
+    );
+    if (!confirmed) return;
+
+    onDelete(slug);
   };
 
   return (
@@ -61,10 +70,15 @@ export function SavedViewsPanel<T>({
               key={view.slug}
               name={view.name}
               onApply={() => onApply(view.slug)}
-              onRename={(newName) =>
-                onRename(view.slug, newName)
+              onRename={
+                onRename
+                  ? (newName) =>
+                      onRename(view.slug, newName)
+                  : undefined
               }
-              onDelete={() => onDelete(view.slug)}
+              onDelete={() =>
+                handleDelete(view.slug)
+              }
             />
           ))}
         </div>

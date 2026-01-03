@@ -89,11 +89,14 @@ export function useSavedViews<T>(domain: Domain) {
   }, [domain]);
 
   /* -----------------------------------------
-   * Derived
+   * Derived (stable & deterministic order)
    * --------------------------------------- */
 
   const views = useMemo(
-    () => Object.values(map),
+    () =>
+      Object.values(map).sort((a, b) =>
+        a.name.localeCompare(b.name)
+      ),
     [map]
   );
 
@@ -117,7 +120,8 @@ export function useSavedViews<T>(domain: Domain) {
           [slug]: {
             slug,
             name,
-            snapshot,
+            // ensure snapshot immutability
+            snapshot: structuredClone(snapshot),
           },
         };
 

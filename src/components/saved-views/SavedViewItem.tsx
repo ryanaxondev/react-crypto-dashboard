@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 type Props = {
   name: string;
   onApply: () => void;
-  onRename: (newName: string) => void;
+  onRename?: (newName: string) => void;
   onDelete: () => void;
 };
 
@@ -16,12 +16,13 @@ export function SavedViewItem({
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(name);
 
-  // Sync local value when parent name changes
   useEffect(() => {
     setValue(name);
   }, [name]);
 
   const handleRename = () => {
+    if (!onRename) return;
+
     const trimmed = value.trim();
     if (!trimmed) return;
 
@@ -77,12 +78,14 @@ export function SavedViewItem({
               Apply
             </button>
 
-            <button
-              className="text-xs text-muted-foreground"
-              onClick={() => setIsEditing(true)}
-            >
-              ✏
-            </button>
+            {onRename && (
+              <button
+                className="text-xs text-muted-foreground"
+                onClick={() => setIsEditing(true)}
+              >
+                ✏
+              </button>
+            )}
 
             <button
               className="text-xs text-red-600"
