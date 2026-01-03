@@ -43,10 +43,21 @@ export function SavedViewsPanel<T>({
 
   return (
     <section className="space-y-3">
+      {/* ---------------- Context ---------------- */}
+      <div>
+        <h3 className="text-sm font-semibold">
+          Saved Views
+        </h3>
+        <p className="text-xs text-muted-foreground">
+          Quickly switch between your favorite setups.
+        </p>
+      </div>
+
+      {/* ---------------- Save Input ---------------- */}
       <div className="flex gap-2">
         <input
           className="flex-1 rounded border px-3 py-2 text-sm"
-          placeholder="Save current view..."
+          placeholder="Name this view (e.g. My Bull Setup)"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
@@ -64,6 +75,7 @@ export function SavedViewsPanel<T>({
         </button>
       </div>
 
+      {/* ---------------- List / Empty ---------------- */}
       {views.length === 0 ? (
         <SavedViewsEmpty />
       ) : (
@@ -75,10 +87,13 @@ export function SavedViewsPanel<T>({
               onApply={() => onApply(view.slug)}
               onRename={
                 onRename
-                  ? (newName) => onRename(view.slug, newName)
+                  ? (newName) =>
+                      onRename(view.slug, newName)
                   : undefined
               }
-              onDelete={() => handleDelete(view.slug)}
+              onDelete={() =>
+                handleDelete(view.slug)
+              }
             />
           ))}
         </div>

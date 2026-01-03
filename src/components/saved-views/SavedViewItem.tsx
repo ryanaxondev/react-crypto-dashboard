@@ -62,6 +62,7 @@ export function SavedViewItem({
       {!isEditing && (
         <div className="flex items-center gap-1">
           <button
+            title="Apply this view"
             className="text-xs text-blue-600"
             onClick={onApply}
           >
@@ -70,18 +71,18 @@ export function SavedViewItem({
 
           {onRename && (
             <button
+              title="Rename view"
               className="text-xs text-muted-foreground"
               onClick={startEdit}
-              title="Rename"
             >
               ✏
             </button>
           )}
 
           <button
+            title="Delete view"
             className="text-xs text-red-600"
             onClick={onDelete}
-            title="Delete"
           >
             🗑
           </button>
