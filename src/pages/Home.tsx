@@ -51,9 +51,9 @@ function Home() {
     saveView,
     deleteView,
     applyView,
-  } = useSavedViews<ReturnType<
-    typeof getSnapshot
-  >>('home');
+  } = useSavedViews<ReturnType<typeof getSnapshot>>(
+    'home'
+  );
 
   /* ---------------- Data ---------------- */
 
@@ -76,6 +76,16 @@ function Home() {
         sortBy
       ),
     [coins, debouncedFilter, sortBy]
+  );
+
+  /* ---------------- Save affordance ---------------- */
+
+  const currentSnapshot = getSnapshot();
+
+  const isSaveDisabled = savedViews.some(
+    (view) =>
+      JSON.stringify(view.snapshot) ===
+      JSON.stringify(currentSnapshot)
   );
 
   /* ---------------- Render ---------------- */
@@ -111,6 +121,7 @@ function Home() {
       <div className="mb-8">
         <SavedViewsPanel
           views={savedViews}
+          isSaveDisabled={isSaveDisabled}
           onSave={(name) =>
             saveView(name, getSnapshot())
           }
@@ -123,6 +134,7 @@ function Home() {
           onRename={(slug, name) => {
             const snapshot = applyView(slug);
             if (!snapshot) return;
+
             deleteView(slug);
             saveView(name, snapshot);
           }}

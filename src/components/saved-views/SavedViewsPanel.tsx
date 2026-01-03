@@ -9,6 +9,8 @@ type Props<T> = {
   onApply: (slug: string) => void;
   onRename?: (slug: string, name: string) => void;
   onDelete: (slug: string) => void;
+
+  isSaveDisabled?: boolean;
 };
 
 export function SavedViewsPanel<T>({
@@ -17,6 +19,7 @@ export function SavedViewsPanel<T>({
   onApply,
   onRename,
   onDelete,
+  isSaveDisabled,
 }: Props<T>) {
   const [name, setName] = useState('');
 
@@ -49,7 +52,7 @@ export function SavedViewsPanel<T>({
         />
 
         <button
-          disabled={!isValidName}
+          disabled={!isValidName || isSaveDisabled}
           onClick={handleSave}
           className="
             rounded bg-blue-600 px-3 py-2 text-sm text-white
@@ -72,13 +75,10 @@ export function SavedViewsPanel<T>({
               onApply={() => onApply(view.slug)}
               onRename={
                 onRename
-                  ? (newName) =>
-                      onRename(view.slug, newName)
+                  ? (newName) => onRename(view.slug, newName)
                   : undefined
               }
-              onDelete={() =>
-                handleDelete(view.slug)
-              }
+              onDelete={() => handleDelete(view.slug)}
             />
           ))}
         </div>

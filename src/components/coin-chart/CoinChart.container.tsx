@@ -34,16 +34,26 @@ const CoinChartContainer = ({ coinId }: Props) => {
     range,
   };
 
+  /* ---------------- Save affordance ---------------- */
+
+  const isSaveDisabled = views.some(
+    (view) =>
+      view.snapshot.range ===
+      currentSnapshot.range
+  );
+
   return (
     <div className="w-full space-y-4">
       <SavedViewsPanel
         views={views}
+        isSaveDisabled={isSaveDisabled}
         onSave={(name) =>
           saveView(name, currentSnapshot)
         }
         onApply={(slug) => {
           const snapshot = applyView(slug);
           if (!snapshot) return;
+
           setRange(snapshot.range);
         }}
         onDelete={deleteView}
