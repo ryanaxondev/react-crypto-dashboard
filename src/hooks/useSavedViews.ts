@@ -15,6 +15,21 @@ type SavedViewMap<T> = Record<string, SavedView<T>>;
 type Domain = 'home' | 'chart';
 
 /* ---------------------------------------------
+ * Export schema (v1)
+ * ------------------------------------------- */
+
+export type ExportedSavedViewsV1<T> = {
+  version: 1;
+  domain: Domain;
+  exportedAt: string;
+  views: Array<{
+    slug: string;
+    name: string;
+    snapshot: T;
+  }>;
+};
+
+/* ---------------------------------------------
  * Storage helpers (private)
  * ------------------------------------------- */
 
@@ -154,6 +169,22 @@ export function useSavedViews<T>(domain: Domain) {
     [map]
   );
 
+  const exportViews = useCallback(
+    (): ExportedSavedViewsV1<T> => {
+      return {
+        version: 1,
+        domain,
+        exportedAt: new Date().toISOString(),
+        views: views.map((view) => ({
+          slug: view.slug,
+          name: view.name,
+          snapshot: structuredClone(view.snapshot),
+        })),
+      };
+    },
+    [domain, views]
+  );
+
   /* -----------------------------------------
    * Public API
    * --------------------------------------- */
@@ -163,5 +194,6 @@ export function useSavedViews<T>(domain: Domain) {
     saveView,
     deleteView,
     applyView,
+    exportViews,
   };
 }
