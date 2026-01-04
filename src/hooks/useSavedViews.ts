@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 /* ---------------------------------------------
  * Types
- * ------------------------------------------- */
+ * -------------------------------------------*/
 
 export type SavedView<T> = {
   slug: string;
@@ -10,18 +10,11 @@ export type SavedView<T> = {
   snapshot: T;
 };
 
-type SavedViewMap<T> = Record<string, SavedView<T>>;
-
-type Domain = 'home' | 'chart';
-
-/* ---------------------------------------------
- * Export schema (v1)
- * ------------------------------------------- */
+export type SavedViewsMap<T> = Record<string, SavedView<T>>;
 
 export type ExportedSavedViewsV1<T> = {
   version: 1;
-  domain: Domain;
-  exportedAt: string;
+  domain: string;
   views: Array<{
     slug: string;
     name: string;
@@ -30,112 +23,134 @@ export type ExportedSavedViewsV1<T> = {
 };
 
 /* ---------------------------------------------
- * Storage helpers (private)
- * ------------------------------------------- */
+ * Storage helpers
+ * -------------------------------------------*/
 
-function getStorageKey(domain: Domain) {
-  return `saved:${domain}`;
+function storageKey(domain: string) {
+  return `saved-views:${domain}`;
 }
 
-function readStorage<T>(domain: Domain): SavedViewMap<T> {
+function readStorage<T>(domain: string): SavedViewsMap<T> {
   try {
-    const raw = localStorage.getItem(
-      getStorageKey(domain)
-    );
+    const raw = localStorage.getItem(storageKey(domain));
     if (!raw) return {};
-    return JSON.parse(raw) as SavedViewMap<T>;
+    return JSON.parse(raw);
   } catch {
     return {};
   }
 }
 
 function writeStorage<T>(
-  domain: Domain,
-  data: SavedViewMap<T>
+  domain: string,
+  map: SavedViewsMap<T>
 ) {
-  localStorage.setItem(
-    getStorageKey(domain),
-    JSON.stringify(data)
-  );
+  try {
+    localStorage.setItem(
+      storageKey(domain),
+      JSON.stringify(map)
+    );
+  } catch {
+    // fail-soft
+  }
 }
 
 /* ---------------------------------------------
- * Slug helpers (private)
- * ------------------------------------------- */
+ * Utils
+ * -------------------------------------------*/
 
 function slugify(input: string): string {
   return input
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-');
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
-function resolveCollision(
-  baseSlug: string,
-  existing: Record<string, unknown>
+function resolveCollision<T>(
+  base: string,
+  map: SavedViewsMap<T>
 ): string {
-  if (!existing[baseSlug]) return baseSlug;
+  if (!map[base]) return base;
 
-  let index = 2;
-  while (existing[`${baseSlug}-${index}`]) {
-    index++;
+  let i = 2;
+  while (map[`${base}-${i}`]) {
+    i++;
+  }
+  return `${base}-${i}`;
+}
+
+/* ---------------------------------------------
+ * Export guard (Step 9.2)
+ * -------------------------------------------*/
+
+function isValidExportV1<T>(
+  input: unknown
+): input is ExportedSavedViewsV1<T> {
+  if (
+    typeof input !== 'object' ||
+    input === null
+  ) {
+    return false;
   }
 
-  return `${baseSlug}-${index}`;
+  const data = input as {
+    version?: unknown;
+    domain?: unknown;
+    views?: unknown;
+  };
+
+  return (
+    data.version === 1 &&
+    typeof data.domain === 'string' &&
+    Array.isArray(data.views)
+  );
 }
 
 /* ---------------------------------------------
  * Hook
- * ------------------------------------------- */
+ * -------------------------------------------*/
 
-export function useSavedViews<T>(domain: Domain) {
-  const [map, setMap] = useState<
-    SavedViewMap<T>
-  >({});
+export function useSavedViews<T>(
+  domain: string,
+  applySnapshot: (snapshot: T) => void
+) {
+  const [map, setMap] = useState<SavedViewsMap<T>>(
+    () => readStorage<T>(domain)
+  );
 
-  /* -----------------------------------------
-   * Initial load
-   * --------------------------------------- */
-
+  /* keep storage in sync if domain changes */
   useEffect(() => {
     setMap(readStorage<T>(domain));
   }, [domain]);
 
-  /* -----------------------------------------
-   * Derived (stable & deterministic order)
-   * --------------------------------------- */
-
   const views = useMemo(
-    () =>
-      Object.values(map).sort((a, b) =>
-        a.name.localeCompare(b.name)
-      ),
+    () => Object.values(map),
     [map]
   );
 
-  /* -----------------------------------------
-   * Actions
-   * --------------------------------------- */
+  /* -------------------------------------------
+   * Save
+   * -----------------------------------------*/
 
   const saveView = useCallback(
     (name: string, snapshot: T) => {
-      const baseSlug = slugify(name);
-      if (!baseSlug) return;
+      const trimmed = name.trim();
+      if (!trimmed) return;
 
       setMap((prev) => {
+        const baseSlug = slugify(trimmed);
+        if (!baseSlug) return prev;
+
         const slug = resolveCollision(
           baseSlug,
           prev
         );
 
-        const next: SavedViewMap<T> = {
+        const next = {
           ...prev,
           [slug]: {
             slug,
-            name,
-            // ensure snapshot immutability
+            name: trimmed,
             snapshot: structuredClone(snapshot),
           },
         };
@@ -146,6 +161,10 @@ export function useSavedViews<T>(domain: Domain) {
     },
     [domain]
   );
+
+  /* -------------------------------------------
+   * Delete
+   * -----------------------------------------*/
 
   const deleteView = useCallback(
     (slug: string) => {
@@ -162,32 +181,90 @@ export function useSavedViews<T>(domain: Domain) {
     [domain]
   );
 
+  /* -------------------------------------------
+   * Apply
+   * -----------------------------------------*/
+
   const applyView = useCallback(
-    (slug: string): T | null => {
-      return map[slug]?.snapshot ?? null;
+    (slug: string) => {
+      const view = map[slug];
+      if (!view) return;
+
+      applySnapshot(
+        structuredClone(view.snapshot)
+      );
     },
-    [map]
+    [map, applySnapshot]
   );
 
-  const exportViews = useCallback(
-    (): ExportedSavedViewsV1<T> => {
-      return {
-        version: 1,
-        domain,
-        exportedAt: new Date().toISOString(),
-        views: views.map((view) => ({
-          slug: view.slug,
-          name: view.name,
-          snapshot: structuredClone(view.snapshot),
-        })),
-      };
-    },
-    [domain, views]
-  );
+  /* -------------------------------------------
+   * Export (v1)
+   * -----------------------------------------*/
 
-  /* -----------------------------------------
-   * Public API
-   * --------------------------------------- */
+  const exportViews = useCallback(() => {
+    const payload: ExportedSavedViewsV1<T> = {
+      version: 1,
+      domain,
+      views: Object.values(map).map(
+        ({ slug, name, snapshot }) => ({
+          slug,
+          name,
+          snapshot,
+        })
+      ),
+    };
+
+    return structuredClone(payload);
+  }, [map, domain]);
+
+/* -------------------------------------------
+ * Import (Step 9.2)
+ * -----------------------------------------*/
+
+const importViews = useCallback(
+  (data: unknown) => {
+    if (!isValidExportV1<T>(data)) return;
+    if (data.domain !== domain) return;
+
+    setMap((prev) => {
+      const next = { ...prev };
+
+      for (const view of data.views) {
+        if (
+          !view ||
+          typeof view.name !== 'string' ||
+          !view.name.trim()
+        ) {
+          continue;
+        }
+
+        const baseSlug = slugify(view.name);
+        if (!baseSlug) continue;
+
+        const slug = resolveCollision(
+          baseSlug,
+          next
+        );
+
+        next[slug] = {
+          slug,
+          name: view.name.trim(),
+          snapshot: structuredClone(
+            view.snapshot
+          ),
+        };
+      }
+
+      writeStorage(domain, next);
+      return next;
+    });
+  },
+  [domain]
+);
+
+  /* -------------------------------------------
+   * Public API (Frozen)
+   * -----------------------------------------*/
 
   return {
     views,
@@ -195,5 +272,6 @@ export function useSavedViews<T>(domain: Domain) {
     deleteView,
     applyView,
     exportViews,
+    importViews,
   };
 }
