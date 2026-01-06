@@ -58,7 +58,7 @@ function writeStorage<T>(
  * Utils
  * -------------------------------------------*/
 
-function slugify(input: string): string {
+export function slugify(input: string): string {
   return input
     .toLowerCase()
     .trim()
@@ -66,7 +66,7 @@ function slugify(input: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-function resolveCollision<T>(
+export function resolveCollision<T>(
   base: string,
   map: SavedViewsMap<T>
 ): string {
@@ -83,7 +83,7 @@ function resolveCollision<T>(
  * Export guard (Step 9.2)
  * -------------------------------------------*/
 
-function isValidExportV1<T>(
+export function isValidExportV1<T>(
   input: unknown
 ): input is ExportedSavedViewsV1<T> {
   if (
