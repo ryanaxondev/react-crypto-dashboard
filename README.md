@@ -57,6 +57,7 @@ src/
 │   ├── useCoin.ts
 │   ├── useCoinChart.ts
 │   ├── useSavedViews.ts
+│   ├── useSavedViews.test.ts
 │   ├── useHomeSearchParams.ts
 │   ├── useChartSearchParams.ts
 │   ├── useSyncedSearchParam.ts
