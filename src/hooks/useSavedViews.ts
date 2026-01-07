@@ -55,6 +55,60 @@ function writeStorage<T>(
 }
 
 /* ---------------------------------------------
+ * Meta (Default View)
+ * -------------------------------------------*/
+
+type SavedViewsMetaV1 = {
+  version: 1;
+  defaultViewSlug?: string;
+};
+
+function metaStorageKey(domain: string) {
+  return `saved-views-meta:${domain}`;
+}
+
+function readMeta(domain: string): SavedViewsMetaV1 {
+  try {
+    const raw = localStorage.getItem(metaStorageKey(domain));
+    if (!raw) return { version: 1 };
+
+    const data = JSON.parse(raw);
+
+    if (
+      typeof data !== 'object' ||
+      data === null ||
+      data.version !== 1
+    ) {
+      return { version: 1 };
+    }
+
+    return {
+      version: 1,
+      defaultViewSlug:
+        typeof data.defaultViewSlug === 'string'
+          ? data.defaultViewSlug
+          : undefined,
+    };
+  } catch {
+    return { version: 1 };
+  }
+}
+
+function writeMeta(
+  domain: string,
+  meta: SavedViewsMetaV1
+) {
+  try {
+    localStorage.setItem(
+      metaStorageKey(domain),
+      JSON.stringify(meta)
+    );
+  } catch {
+    // fail-soft
+  }
+}
+
+/* ---------------------------------------------
  * Utils
  * -------------------------------------------*/
 
@@ -118,9 +172,16 @@ export function useSavedViews<T>(
     () => readStorage<T>(domain)
   );
 
-  /* keep storage in sync if domain changes */
+  const [, setMeta] = useState<SavedViewsMetaV1>(
+    () => readMeta(domain)
+  );
+
   useEffect(() => {
     setMap(readStorage<T>(domain));
+  }, [domain]);
+
+  useEffect(() => {
+    setMeta(readMeta(domain));
   }, [domain]);
 
   const views = useMemo(
@@ -179,6 +240,26 @@ export function useSavedViews<T>(
       });
     },
     [domain]
+  );
+
+    /* -------------------------------------------
+   * Meta: Default View
+   * -----------------------------------------*/
+
+  const setDefaultView = useCallback(
+    (slug: string | null) => {
+      setMeta(() => {
+        const next: SavedViewsMetaV1 = {
+          version: 1,
+          defaultViewSlug:
+            slug && map[slug] ? slug : undefined,
+        };
+
+        writeMeta(domain, next);
+        return next;
+      });
+    },
+    [domain, map]
   );
 
   /* -------------------------------------------
@@ -273,5 +354,6 @@ const importViews = useCallback(
     applyView,
     exportViews,
     importViews,
+    setDefaultView,
   };
 }
